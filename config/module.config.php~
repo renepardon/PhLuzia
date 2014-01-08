@@ -1,0 +1,23 @@
+<?php
+namespace CHKGearman;
+
+return array(
+    /*'di' => array(
+        'instance' => array(
+            'mwGearman\Client\Pecl' => array(
+                'parameters' => array(
+                    'servers' => array(
+                        array('localhost'),
+                    ),
+                ),
+            ),
+            'mwGearman\Worker\Pecl' => array(
+                'parameters' => array(
+                    'servers' => array(
+                        array('localhost'),
+                    ),
+                ),
+            ),
+        ),
+    ),*/
+);
