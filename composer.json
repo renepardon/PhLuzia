@@ -1,0 +1,35 @@
+{
+    "name": "renepardon/PhMagick",
+    "description": "Image Magick wrapper for PHP and ZF2",
+    "type": "library",
+    "keywords": [
+        "framework",
+        "zf2",
+        "library",
+        "imagemagick"
+    ],
+    "homepage": "https://github.com/renepardon/PhMagick",
+    "license": "GNU-GPL-3",
+    "authors": [
+        {
+            "name": "Nuno Costa",
+            "email": "sven@francodacosta.com",
+            "homepage": "http://www.francodacosta.com"
+        },
+        {
+            "name": "Christoph, René Pardon",
+            "email": "christoph@renepardon.de",
+            "homepage": "http://www.renepardon.de"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zendframework": "2.2.*",
+        "phpunit/PHPUnit": "3.7.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "PhMagick\\": "src/"
+        }
+    }
+}

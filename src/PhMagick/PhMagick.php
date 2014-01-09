@@ -269,14 +269,14 @@ class PhMagick
     }
 
     /**
-     * Covnert adapter and it's key to correct format for $adapter.
+     * Covnert $adapter to correct format for $adapters.
      *
      * @param string|AdapterInterface $adapter
      * @param string $key
      *
      * @throws \Exception
      */
-    private function _convertAdapters(&$adapter, &$key)
+    private function _convertAdapters(&$adapter, $key)
     {
         // That's what we want :)
         if ($adapter instanceof AdapterInterface) {
@@ -285,8 +285,11 @@ class PhMagick
 
         if (is_string($adapter)) {
             $class = 'PhMagick\Adapter\\' . ucfirst($adapter);
-            $adapter = new $class();
-            return;
+
+            if (class_exists($class)) {
+                $adapter = new $class();
+                return;
+            }
         }
 
         throw new \Exception('Unknown adapter/type provided');

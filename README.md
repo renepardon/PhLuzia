@@ -11,6 +11,11 @@ Ready to use within a ZF2 project. Just clone into Vendor directory and link wit
 Usage
 =====
 
+    <?php
+    use PhMagick/PhMagick;
+
+    // ...
+
     $phmagick = new PhMagick('/tmp/image.jpg', '/tmp/newimage.jpg');
     $phmagick->setAdapters(array('decorations', 'resize'));
     $phmagick->resizeExactly(450, 200);
