@@ -7,20 +7,34 @@ use PhMagick\Adapter\AdapterInterface;
 /**
  * Image manipulation library.
  *
- * This library can be used for easy image manipulation with Image Magick.
+ * This library can be used for easy image manipulation with
+ * Image Magick/Graphics Magick.
  *
  * PHP version 5
  *
- * LICENSE: LGPL
+ * LICENSE: GPL-3.0
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @package    PhMagick
- * @author     Christoph, René Pardon <rene.pardon@check24.de>
+ * @author     Christoph, René Pardon <christoph@renepardon.de>
  * @author     Nuno Costa, <sven@francodacosta.com> (Initial Author)
- * @copyright  2014 by Check 24 Vergleichsportal GmbH
- * @license    -
- * @version    0.4.1
+ * @copyright  2014 by Christoph, René Pardon
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt
+ * @version    1.0
  * @link       http://www.francodacosta.com/phmagick
- * @since      2008-03-13
+ * @since      2013-01-09
  */
 class PhMagick
 {
@@ -126,10 +140,10 @@ class PhMagick
     }
 
     /**
-     * @todo edit ...?
-     * @param $cmd
+     * Execute the command against installed library (Imagemagick/Graphicsmagick)
      *
-     * @return null
+     * @param string $cmd
+     * @return null|string|int
      */
     public function execute($cmd)
     {
@@ -161,6 +175,16 @@ class PhMagick
         return $ret;
     }
 
+    /**
+     * Gets file information.
+     *
+     * Returns the size of provided image or size of image stored within $source
+     * if no $file is provided.
+     *
+     * @param string $file
+     *
+     * @return array
+     */
     public function getInfo($file = '')
     {
         if ($file == '') {
@@ -170,6 +194,13 @@ class PhMagick
         return getimagesize($file);
     }
 
+    /**
+     * Get width of image.
+     *
+     * @param string $file
+     *
+     * @return mixed
+     */
     public function getWidth($file = '')
     {
         list($width, $height, $type, $attr) = $this->getInfo($file);
@@ -177,6 +208,13 @@ class PhMagick
         return $width;
     }
 
+    /**
+     * Get height of image.
+     *
+     * @param string $file
+     *
+     * @return mixed
+     */
     public function getHeight($file = '')
     {
         list($width, $height, $type, $attr) = $this->getInfo($file);
@@ -184,7 +222,13 @@ class PhMagick
         return $height;
     }
 
-
+    /**
+     * Get size of image in Bits.
+     *
+     * @param string $file
+     *
+     * @return mixed
+     */
     public function getBits($file = '')
     {
         if ($file == '') {
@@ -196,6 +240,13 @@ class PhMagick
         return $info["bits"];
     }
 
+    /**
+     * Gets MIME type of image.
+     *
+     * @param string $file
+     *
+     * @return mixed
+     */
     public function getMime($file = '')
     {
         if ($file == '') {
