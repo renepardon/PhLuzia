@@ -6,7 +6,7 @@
         "framework",
         "zf2",
         "library",
-        "imagemagick"
+        "PhMagick"
     ],
     "homepage": "https://github.com/renepardon/PhMagick",
     "license": "GNU-GPL-3",
@@ -23,7 +23,9 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.3.3"
+    },
+    "require-dev": {
         "zendframework/zendframework": "2.2.*",
         "phpunit/PHPUnit": "3.7.*"
     },
@@ -31,5 +33,8 @@
         "psr-0": {
             "PhMagick\\": "src/"
         }
-    }
+    },
+    "classmap": [
+        "./"
+    ]
 }

@@ -1,0 +1,8 @@
+<phpunit bootstrap="./Bootstrap.php" colors="true">
+    <testsuites>
+        <testsuite name="PhMagick Test Suite">
+            <directory>./PhMagick</directory>
+            <exclude>./PhMagick/_files/</exclude>
+        </testsuite>
+    </testsuites>
+</phpunit>
