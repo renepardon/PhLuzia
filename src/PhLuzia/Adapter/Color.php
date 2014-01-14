@@ -1,9 +1,9 @@
 <?php
 
-namespace PhMagick\Adapter;
+namespace PhLuzia\Adapter;
 
-use PhMagick\Command;
-use PhMagick\Service\PhMagick;
+use PhLuzia\Command;
+use PhLuzia\Service\PhLuzia;
 
 /**
  * Image manipulation library.
@@ -28,12 +28,12 @@ use PhMagick\Service\PhMagick;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package    PhMagick/Adapter
+ * @package    PhLuzia/Adapter
  * @author     Christoph, René Pardon <christoph@renepardon.de>
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       https://github.com/renepardon/PhMagick
+ * @link       https://github.com/renepardon/PhLuzia
  * @since      2013-01-09
  */
 class Color extends AdapterAbstract
@@ -43,7 +43,7 @@ class Color extends AdapterAbstract
      *
      * @param int $alphaValue
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function darken($alphaValue = 50)
     {
@@ -54,7 +54,7 @@ class Color extends AdapterAbstract
 
         $cmd = new Command('composite', $this->service);
 
-        if (PHMAGICK_LIBRARY_GRAPHICSMAGICK == $this->service->getOptions()['library']) {
+        if (PHLUZIA_LIBRARY_GRAPHICSMAGICK == $this->service->getOptions()['library']) {
             $cmd->addOption('-dissolve %d', $percent);
         } else {
             $cmd->addOption('-blend %d', $percent);
@@ -76,7 +76,7 @@ class Color extends AdapterAbstract
      *
      * @param int $alphaValue
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function brighten($alphaValue = 50)
     {
@@ -87,7 +87,7 @@ class Color extends AdapterAbstract
 
         $cmd = new Command('composite', $this->service);
 
-        if (PHMAGICK_LIBRARY_GRAPHICSMAGICK == $this->service->getOptions()['library']) {
+        if (PHLUZIA_LIBRARY_GRAPHICSMAGICK == $this->service->getOptions()['library']) {
             $cmd->addOption('-dissolve %d', $percent);
         } else {
             $cmd->addOption('-blend %d', $percent);
@@ -107,14 +107,14 @@ class Color extends AdapterAbstract
      *
      * @param int $enhance
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function toGreyScale($enhance = 2)
     {
         $cmd = new Command('convert', $this->service);
         $cmd->addOption('-modulate 100,0');
 
-        if (PHMAGICK_LIBRARY_IMAGEMAGICK == $this->service->getOptions()['library']) {
+        if (PHLUZIA_LIBRARY_IMAGEMAGICK == $this->service->getOptions()['library']) {
             $cmd->addOption('-sigmoidal-contrast %dx50%%', $enhance);
         }
 
@@ -128,7 +128,7 @@ class Color extends AdapterAbstract
     /**
      * Inverts the image colors.
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function invertColors()
     {
@@ -146,13 +146,13 @@ class Color extends AdapterAbstract
      *
      * @param int $tone Ignored with Graphicsmagick
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function sepia($tone = 90)
     {
         $cmd = new Command('convert', $this->service);
 
-        if (PHMAGICK_LIBRARY_GRAPHICSMAGICK == $this->service->getOptions()['library']) {
+        if (PHLUZIA_LIBRARY_GRAPHICSMAGICK == $this->service->getOptions()['library']) {
             // @todo Play with values to get real sepia!!!
             $cmd->addOption('-modulate 115,0,100')
                 ->addOption('-colorize 7,21,50')
@@ -176,7 +176,7 @@ class Color extends AdapterAbstract
      *
      * Normalization of image.
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function autoLevels()
     {

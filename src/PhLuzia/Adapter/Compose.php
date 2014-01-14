@@ -1,11 +1,11 @@
 <?php
 
-namespace PhMagick\Adapter;
+namespace PhLuzia\Adapter;
 
-use PhMagick\Command;
-use PhMagick\Gravity;
-use PhMagick\History;
-use PhMagick\Service\PhMagick;
+use PhLuzia\Command;
+use PhLuzia\Gravity;
+use PhLuzia\History;
+use PhLuzia\Service\PhLuzia;
 
 /**
  * Image manipulation library.
@@ -30,12 +30,12 @@ use PhMagick\Service\PhMagick;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package    PhMagick/Adapter
+ * @package    PhLuzia/Adapter
  * @author     Christoph, René Pardon <christoph@renepardon.de>
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       https://github.com/renepardon/PhMagick
+ * @link       https://github.com/renepardon/PhLuzia
  * @since      2013-01-09
  */
 class Compose extends AdapterAbstract
@@ -49,7 +49,7 @@ class Compose extends AdapterAbstract
      * @param string $gravity The placement of the watermark.
      * @param int $transparency 1 to 100, the transparency of the watermark (100 = opaque).
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function watermark($watermarkImage, $gravity = Gravity::Center, $transparency = 50)
     {
@@ -72,7 +72,7 @@ class Compose extends AdapterAbstract
      * @param string|int $tileWidth
      * @param string|int $tileHeight
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function tile(array $paths = null, $tileWidth = 0, $tileHeight = 1)
     {
@@ -82,7 +82,7 @@ class Compose extends AdapterAbstract
 
         $cmd = new Command('montage', $this->service);
 
-        if (PHMAGICK_LIBRARY_GRAPHICSMAGICK == $this->service->getOptions()['library']) {
+        if (PHLUZIA_LIBRARY_GRAPHICSMAGICK == $this->service->getOptions()['library']) {
             // @todo Get working with Graphicsmagick
             $cmd->addOption('-tile %dx%d -geometry 0x0+0+0', $tileWidth, $tileHeight);
         } else {
@@ -105,7 +105,7 @@ class Compose extends AdapterAbstract
      * @param $file The path to file.
      * @param int $frames
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function acquireFrame($file, $frames = 0)
     {

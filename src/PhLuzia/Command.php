@@ -1,8 +1,8 @@
 <?php
 
-namespace PhMagick;
+namespace PhLuzia;
 
-use PhMagick\Service\PhMagick as Service;
+use PhLuzia\Service\PhLuzia as Service;
 
 /**
  * Image manipulation library.
@@ -27,12 +27,12 @@ use PhMagick\Service\PhMagick as Service;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package    PhMagick
+ * @package    PhLuzia
  * @author     Christoph, René Pardon <christoph@renepardon.de>
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       https://github.com/renepardon/PhMagick
+ * @link       https://github.com/renepardon/PhLuzia
  * @since      2013-01-09
  */
 class Command
@@ -68,7 +68,7 @@ class Command
     {
         $this->service = $service;
 
-        if ($this->service->isLibrary(PHMAGICK_LIBRARY_GRAPHICSMAGICK)) {
+        if ($this->service->isLibrary(PHLUZIA_LIBRARY_GRAPHICSMAGICK)) {
             $this->binary = 'gm ' . (string)$binary;
         } else {
             $this->binary = (string)$binary;

@@ -1,9 +1,9 @@
 <?php
 
-namespace PhMagick\Adapter;
+namespace PhLuzia\Adapter;
 
-use PhMagick\Command;
-use PhMagick\Service\PhMagick;
+use PhLuzia\Command;
+use PhLuzia\Service\PhLuzia;
 
 /**
  * Image manipulation library.
@@ -28,12 +28,12 @@ use PhMagick\Service\PhMagick;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package    PhMagick/Adapter
+ * @package    PhLuzia/Adapter
  * @author     Christoph, René Pardon <christoph@renepardon.de>
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       https://github.com/renepardon/PhMagick
+ * @link       https://github.com/renepardon/PhLuzia
  * @since      2013-01-09
  */
 class Enhancements extends AdapterAbstract
@@ -43,7 +43,7 @@ class Enhancements extends AdapterAbstract
      *
      * @param int $amount
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function denoise($amount = 1)
     {
@@ -65,7 +65,7 @@ class Enhancements extends AdapterAbstract
      *
      * @param int $amount
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function sharpen($amount = 10)
     {
@@ -82,7 +82,7 @@ class Enhancements extends AdapterAbstract
     /**
      * Chip the edges within current image.
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function smooth()
     {
@@ -106,7 +106,7 @@ class Enhancements extends AdapterAbstract
      *
      * @param int $amount
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function saturate($amount = 200)
     {
@@ -133,7 +133,7 @@ class Enhancements extends AdapterAbstract
      * @param int $amount The contrast factor. ('10' being very high, and '0.5'
      *                    very low)
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function contrast($amount = 10)
     {
@@ -152,7 +152,7 @@ class Enhancements extends AdapterAbstract
      *
      * @param int $amount
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function adaptiveSharpen($amount = 10)
     {
@@ -171,7 +171,7 @@ class Enhancements extends AdapterAbstract
      *
      * @param int $edge
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function edges($edge = 2)
     {

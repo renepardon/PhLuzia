@@ -1,20 +1,14 @@
 {
-    "name": "renepardon/PhMagick",
+    "name": "renepardon/PhLuzia",
     "description": "Image Magick wrapper for PHP and ZF2",
     "type": "library",
     "keywords": [
         "library",
-        "PhMagick"
+        "PhLuzia"
     ],
-    "homepage": "https://github.com/renepardon/PhMagick",
+    "homepage": "https://github.com/renepardon/PhLuzia",
     "license": "GPL-3.0",
     "authors": [
-        {
-            "name": "Nuno Costa",
-            "email": "sven@francodacosta.com",
-            "homepage": "http://www.francodacosta.com",
-            "role": "Developer"
-        },
         {
             "name": "Christoph, René Pardon",
             "email": "christoph@renepardon.de",
@@ -33,7 +27,7 @@
     },
     "autoload": {
         "psr-0": {
-            "PhMagick": "src/"
+            "PhLuzia": "src/"
         }
     },
     "classmap": [

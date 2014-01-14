@@ -1,4 +1,4 @@
-PhMagick
+PhLuzia
 ========
 
 Image Magick Wrapper Library.
@@ -8,7 +8,7 @@ Build status
 ------------
 Master branch:
 
-[![Build Status](https://secure.travis-ci.org/renepardon/PhMagick.png?branch=master)](http://travis-ci.org/renepardon/PhMagick)
+[![Build Status](https://secure.travis-ci.org/renepardon/PhLuzia.png?branch=master)](http://travis-ci.org/renepardon/PhLuzia)
 
 Installation
 ------------
@@ -23,11 +23,11 @@ Add the following parts to your **composer.json** file...
         "repositories": [
             {
                 "type": "vcs",
-                "url": "https://github.com/renepardon/PhMagick.git"
+                "url": "https://github.com/renepardon/PhLuzia.git"
             }
         ],
         "require": {
-            "renepardon/PhMagick": "dev-master"
+            "renepardon/PhLuzia": "dev-master"
         }
     }
 
@@ -39,7 +39,7 @@ Add the following parts to your **composer.json** file...
 
     $ cd /path/to/project
     $ mkdir vendor/renepardon
-    $ git clone --recursive https://github.com/renepardon/PhMagick.git vendor/renepardon/PhMagick
+    $ git clone --recursive https://github.com/renepardon/PhLuzia.git vendor/renepardon/PhLuzia
 
 #### config/application.config.php
 
@@ -47,7 +47,7 @@ Add the following parts to your **composer.json** file...
     return array(
         // This should be an array of module namespaces used in the application.
         'modules' => array(
-            'PhMagick',
+            'PhLuzia',
         ),
     );
 
@@ -59,19 +59,20 @@ Modify the default values and switch between Graphicsmagick/Imagemagick.
 
 Usage
 -----
+```php
+<?php
+// Retrieve service instance.
+$service = $this->serviceManager->get('phluzia');
+// Source is the image we want to modify and destination the name of new image.
+$service->setSource('/tmp/testimage.jpg')
+        ->setDestination('/tmp/testimage_1_' . time() . '.jpg');
+// The first call to resize will return an instance of Adapter and the second one call's the resize method.
+$service->resize()->resize(150, 200, true);
 
-    <?php
-    // Retrieve service instance.
-    $service = $this->serviceManager->get('phmagick');
-    // Source is the image we want to modify and destination the name of new image.
-    $service->setSource('/tmp/testimage.jpg')
-            ->setDestination('/tmp/testimage_1_' . time() . '.jpg');
-    // The first call to resize will return an instance of Adapter and the second one call's the resize method.
-    $service->resize()->resize(150, 200, true);
-
-    // Use the same service but set source again, so that we work on a new image.
-    $service->setSource('/tmp/testimage.jpg')
-            ->setDestination('/tmp/testimage_2_' . time() . '.jpg');
-    $watermarkImage = realpath(dirname(__FILE__) . '/_files/watermark.png');
-    // This places the watermark image on the top left without transparency.
-    $this->service->compose()->watermark($watermarkImage, Gravity::NorthWest, 100);
+// Use the same service but set source again, so that we work on a new image.
+$service->setSource('/tmp/testimage.jpg')
+        ->setDestination('/tmp/testimage_2_' . time() . '.jpg');
+$watermarkImage = realpath(dirname(__FILE__) . '/_files/watermark.png');
+// This places the watermark image on the top left without transparency.
+$this->service->compose()->watermark($watermarkImage, Gravity::NorthWest, 100);
+```

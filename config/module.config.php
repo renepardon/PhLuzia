@@ -1,7 +1,6 @@
 <?php
-namespace PhMagick;
 
-use PhMagick\Service\PhMagick as PhMagickService;
+namespace PhLuzia;
 
 /**
  * How does GraphicsMagick differ from ImageMagick? (Copied from
@@ -41,19 +40,19 @@ use PhMagick\Service\PhMagick as PhMagickService;
  *
  */
 // Defines which library to use.
-define('PHMAGICK_LIBRARY_IMAGEMAGICK', 'imagemagick');
-define('PHMAGICK_LIBRARY_GRAPHICSMAGICK', 'graphicsmagick');
+define('PHLUZIA_LIBRARY_IMAGEMAGICK', 'imagemagick');
+define('PHLUZIA_LIBRARY_GRAPHICSMAGICK', 'graphicsmagick');
 
 return array(
-    'phmagick' => array(
+    'phluzia' => array(
         /**
          * Decide which library to use. We use the faster and more
          * lightweight GraphicsMagick library per default.
          */
-        'library' => PHMAGICK_LIBRARY_IMAGEMAGICK,
+        'library' => PHLUZIA_LIBRARY_IMAGEMAGICK,
 
         /**
-         * This array contains default configuration options for the PhMagick
+         * This array contains default configuration options for the PhLuzia
          * service/library.
          */
         'defaults' => array(
@@ -64,7 +63,7 @@ return array(
 
     'service_manager' => array(
         'factories' => array(
-            'phmagick' => 'PhMagick\Service\PhMagickFactory',
+            'phluzia' => 'PhLuzia\Service\PhLuziaFactory',
         ),
     ),
 );

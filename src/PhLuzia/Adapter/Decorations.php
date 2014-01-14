@@ -1,10 +1,10 @@
 <?php
 
-namespace PhMagick\Adapter;
+namespace PhLuzia\Adapter;
 
-use PhMagick\Command;
-use PhMagick\Service\PhMagick;
-use PhMagick\TextObject;
+use PhLuzia\Command;
+use PhLuzia\Service\PhLuzia;
+use PhLuzia\TextObject;
 
 /**
  * Image manipulation library.
@@ -29,12 +29,12 @@ use PhMagick\TextObject;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package    PhMagick/Adapter
+ * @package    PhLuzia/Adapter
  * @author     Christoph, René Pardon <christoph@renepardon.de>
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       https://github.com/renepardon/PhMagick
+ * @link       https://github.com/renepardon/PhLuzia
  * @since      2013-01-09
  */
 class Decorations extends AdapterAbstract
@@ -44,7 +44,7 @@ class Decorations extends AdapterAbstract
      *
      * @param int $i Radius to use.
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function roundCorners($i = 15)
     {
@@ -74,7 +74,7 @@ class Decorations extends AdapterAbstract
      * @param int $top
      * @param int $left
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function dropShadow($color = '#000000', $offset = 4, $transparency = 60, $top = 4, $left = 4)
     {
@@ -102,7 +102,7 @@ class Decorations extends AdapterAbstract
      * @param int $offset
      * @param int $transparency
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function glow($color = '#827f00', $offset = 10, $transparency = 60)
     {
@@ -131,7 +131,7 @@ class Decorations extends AdapterAbstract
      *                            that do not support transparency or you will
      *                            end up with a black background).
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function fakePolaroid($rotate = 6, $borderColor = "#fff", $background = "none")
     {
@@ -160,7 +160,7 @@ class Decorations extends AdapterAbstract
      *                             images that do not support transparency or
      *                             you will end up with a black background)
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function polaroid($format = null, $rotation = 6, $borderColor = "snow", $shadowColor = "black", $background = "none")
     {
@@ -217,7 +217,7 @@ class Decorations extends AdapterAbstract
      * @param string $borderColor
      * @param int $borderSize
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function border($borderColor = "#000", $borderSize = 1)
     {

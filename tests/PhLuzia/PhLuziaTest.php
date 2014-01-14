@@ -1,6 +1,6 @@
 <?php
 
-namespace PhMagick;
+namespace PhLuzia;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\ServiceManager\ServiceManager;
@@ -28,16 +28,16 @@ use Zend\ServiceManager\ServiceManager;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package    PhMagick
+ * @package    PhLuzia
  * @category   Test
  * @author     Christoph, René Pardon <christoph@renepardon.de>
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       https://github.com/renepardon/PhMagick
+ * @link       https://github.com/renepardon/PhLuzia
  * @since      2013-01-09
  */
-class PhMagick extends TestCase
+class PhLuzia extends TestCase
 {
     /**
      * @var ServiceManager
@@ -50,7 +50,7 @@ class PhMagick extends TestCase
     protected $factory;
 
     /**
-     * @var \PhMagick\Service\PhMagick
+     * @var \PhLuzia\Service\PhLuzia
      */
     protected $service;
 
@@ -60,7 +60,7 @@ class PhMagick extends TestCase
     protected $sourceImage = '';
 
     /**
-     * Initialize service manager with Config service and PhMagick service.
+     * Initialize service manager with Config service and PhLuzia service.
      *
      * {@inheritDoc}
      */
@@ -70,9 +70,9 @@ class PhMagick extends TestCase
 
         $this->serviceManager = new ServiceManager();
         $this->serviceManager->setService('Config', $moduleConfig);
-        $this->serviceManager->setFactory('phmagick', 'PhMagick\Service\PhMagickFactory');
+        $this->serviceManager->setFactory('phluzia', 'PhLuzia\Service\PhLuziaFactory');
 
-        $this->service = $this->serviceManager->get('phmagick');
+        $this->service = $this->serviceManager->get('phluzia');
 
         $this->sourceImage = realpath(dirname(__FILE__) . '/_files/testimage.jpg');
     }
@@ -81,7 +81,7 @@ class PhMagick extends TestCase
     {
         // Cleanup test files :)
         foreach (glob("/tmp/testimage*") as $file) {
-            // @unlink($file); // @todo uncomment !!
+            @unlink($file);
         }
     }
 

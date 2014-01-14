@@ -1,10 +1,6 @@
 <?php
 
-namespace PhMagick\Service;
-
-use PhMagick\PhMagick as PhMagickLibrary;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+namespace PhLuzia\Adapter;
 
 /**
  * Image manipulation library.
@@ -29,27 +25,14 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package    PhMagick\Service
+ * @package    PhLuzia/Adapter
  * @author     Christoph, René Pardon <christoph@renepardon.de>
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       https://github.com/renepardon/PhMagick
+ * @link       https://github.com/renepardon/PhLuzia
  * @since      2013-01-09
  */
-class PhMagickFactory implements FactoryInterface
+trait AdapterTrait
 {
-    /**
-     * Create and return PhMagick service instance.
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return PhMagick
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {
-        $config = $serviceLocator->get('Config');
-        $service = new PhMagick($config['phmagick']);
-
-        return $service;
-    }
 }

@@ -1,8 +1,8 @@
 <phpunit bootstrap="./Bootstrap.php" colors="true">
     <testsuites>
-        <testsuite name="PhMagick Test Suite">
-            <directory>./PhMagick</directory>
-            <exclude>./PhMagick/_files/</exclude>
+        <testsuite name="PhLuzia Test Suite">
+            <directory>./PhLuzia</directory>
+            <exclude>./PhLuzia/_files/</exclude>
         </testsuite>
     </testsuites>
     <filter>

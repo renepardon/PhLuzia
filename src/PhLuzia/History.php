@@ -1,6 +1,6 @@
 <?php
 
-namespace PhMagick;
+namespace PhLuzia;
 
 /**
  * Image manipulation library.
@@ -25,68 +25,23 @@ namespace PhMagick;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package    PhMagick
+ * @package    PhLuzia
  * @author     Christoph, René Pardon <christoph@renepardon.de>
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       https://github.com/renepardon/PhMagick
+ * @link       https://github.com/renepardon/PhLuzia
  * @since      2013-01-09
  */
-class Gravity
+class History
 {
     /**
-     * @var string
+     * @var int
      */
-    const None = 'None';
+    const TO_ARRAY = 0;
 
     /**
-     * @var string
+     * @var int
      */
-    const Center = 'Center';
-
-    /**
-     * @var string
-     */
-    const East = 'East';
-
-    /**
-     * @var string
-     */
-    const Forget = 'Forget';
-
-    /**
-     * @var string
-     */
-    const NorthEast = 'NorthEast';
-
-    /**
-     * @var string
-     */
-    const North = 'North';
-
-    /**
-     * @var string
-     */
-    const NorthWest = 'NorthWest';
-
-    /**
-     * @var string
-     */
-    const SouthEast = 'SouthEast';
-
-    /**
-     * @var string
-     */
-    const South = 'South';
-
-    /**
-     * @var string
-     */
-    const SouthWest = 'SouthWest';
-
-    /**
-     * @var string
-     */
-    const West = 'West';
+    const TO_CSV = 1;
 }

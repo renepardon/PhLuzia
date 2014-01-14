@@ -1,9 +1,9 @@
 <?php
 
-namespace PhMagick\Adapter;
+namespace PhLuzia\Adapter;
 
-use PhMagick\Command;
-use PhMagick\Service\PhMagick;
+use PhLuzia\Command;
+use PhLuzia\Service\PhLuzia;
 
 /**
  * Image manipulation library.
@@ -28,12 +28,12 @@ use PhMagick\Service\PhMagick;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package    PhMagick/Adapter
+ * @package    PhLuzia/Adapter
  * @author     Christoph, René Pardon <christoph@renepardon.de>
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       https://github.com/renepardon/PhMagick
+ * @link       https://github.com/renepardon/PhLuzia
  * @since      2013-01-09
  */
 class Convert extends AdapterAbstract
@@ -47,7 +47,7 @@ class Convert extends AdapterAbstract
      * to structure your convert command or see below for example usages of
      * the command.
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function convert()
     {

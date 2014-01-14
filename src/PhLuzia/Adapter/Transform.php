@@ -1,10 +1,10 @@
 <?php
 
-namespace PhMagick\Adapter;
+namespace PhLuzia\Adapter;
 
-use PhMagick\Command;
-use PhMagick\Gravity;
-use PhMagick\Service\PhMagick;
+use PhLuzia\Command;
+use PhLuzia\Gravity;
+use PhLuzia\Service\PhLuzia;
 
 /**
  * Image manipulation library.
@@ -29,12 +29,12 @@ use PhMagick\Service\PhMagick;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package    PhMagick/Adapter
+ * @package    PhLuzia/Adapter
  * @author     Christoph, René Pardon <christoph@renepardon.de>
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       https://github.com/renepardon/PhMagick
+ * @link       https://github.com/renepardon/PhLuzia
  * @since      2013-01-09
  */
 class Transform extends AdapterAbstract
@@ -44,7 +44,7 @@ class Transform extends AdapterAbstract
      *
      * @param int $degrees
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function rotate($degrees = 45)
     {
@@ -62,7 +62,7 @@ class Transform extends AdapterAbstract
     /**
      * Flips the image vertically.
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function flipVertical()
     {
@@ -79,7 +79,7 @@ class Transform extends AdapterAbstract
     /**
      * Flips the image horizontally.
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function flipHorizontal()
     {
@@ -99,19 +99,10 @@ class Transform extends AdapterAbstract
      * @param int $size
      * @param int $transparency
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function reflection($size = 60, $transparency = 50)
     {
-        /*$cmd = new Command('convert', $this->service);
-        $cmd->addOption('-flop')
-            ->addOption('"%s"', $this->service->getSource())
-            ->addOption('"%s"', $this->service->getDestination());
-
-        $cmd->exec();
-
-        return $this->service;*/
-
         $source = $this->service->getSource();
 
         // Invert image.

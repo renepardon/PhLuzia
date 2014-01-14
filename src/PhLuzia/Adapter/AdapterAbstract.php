@@ -1,6 +1,9 @@
 <?php
 
-namespace PhMagick\Adapter;
+namespace PhLuzia\Adapter;
+
+use PhLuzia\Service\PhLuzia as Service;
+use Zend\Config\Config;
 
 /**
  * Image manipulation library.
@@ -25,14 +28,35 @@ namespace PhMagick\Adapter;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package    PhMagick/Adapter
+ * @package    PhLuzia/Adapter
  * @author     Christoph, René Pardon <christoph@renepardon.de>
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       https://github.com/renepardon/PhMagick
+ * @link       https://github.com/renepardon/PhLuzia
  * @since      2013-01-09
  */
-trait AdapterTrait
+abstract class AdapterAbstract implements AdapterInterface
 {
+    /**
+     * @var array|Config
+     */
+    protected $options = array();
+
+    /**
+     * @var null|Service
+     */
+    protected $service = null;
+
+    /**
+     * Initialize adapter with configuration options (defaults) and dynamic
+     * options (image offset, target, ...)
+     *
+     * @param Service $phMagick
+     */
+    public function __construct(Service $phMagick)
+    {
+        $this->service = $phMagick;
+        $this->options = $this->service->getOptions();
+    }
 }

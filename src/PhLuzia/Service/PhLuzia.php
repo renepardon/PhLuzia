@@ -1,8 +1,8 @@
 <?php
 
-namespace PhMagick\Service;
+namespace PhLuzia\Service;
 
-use PhMagick\History;
+use PhLuzia\History;
 use Zend\Config\Config;
 
 /**
@@ -28,15 +28,15 @@ use Zend\Config\Config;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package    PhMagick\Service
+ * @package    PhLuzia\Service
  * @author     Christoph, René Pardon <christoph@renepardon.de>
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       https://github.com/renepardon/PhMagick
+ * @link       https://github.com/renepardon/PhLuzia
  * @since      2013-01-09
  */
-class PhMagick
+class PhLuzia
 {
     /**
      * @var array|\Zend\Config\Config
@@ -91,7 +91,7 @@ class PhMagick
     private $log = array();
 
     /**
-     * Initialize PhMagick service with configuration options.
+     * Initialize PhLuzia service with configuration options.
      *
      * @param Config $options
      */
@@ -211,7 +211,7 @@ class PhMagick
             }
         }*/
 
-        $class = 'PhMagick\Adapter\\' . ucfirst($method);
+        $class = 'PhLuzia\Adapter\\' . ucfirst($method);
 
         if (class_exists($class)) {
             return new $class($this);
@@ -263,7 +263,7 @@ class PhMagick
      *
      * @param string $path
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function setSource($path)
     {
@@ -295,7 +295,7 @@ class PhMagick
      *
      * @param string $path
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function setDestination($path)
     {
@@ -330,7 +330,7 @@ class PhMagick
      *
      * @param string $path
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function setImageMagickPath($path)
     {
@@ -360,7 +360,7 @@ class PhMagick
      *
      * @param int $value
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function setImageQuality($value)
     {
@@ -402,7 +402,7 @@ class PhMagick
      *
      * @param string $path
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function setHistory($path)
     {
@@ -414,7 +414,7 @@ class PhMagick
     /**
      * Clear the history.
      *
-     * @return PhMagick
+     * @return PhLuzia
      */
     public function clearHistory()
     {
