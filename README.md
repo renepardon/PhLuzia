@@ -19,17 +19,19 @@ Ready to use within a ZF2 project. Just clone into **vendor/** directory and lin
 
 Add the following parts to your **composer.json** file...
 
-    {
-        "repositories": [
-            {
-                "type": "vcs",
-                "url": "https://github.com/renepardon/PhLuzia.git"
-            }
-        ],
-        "require": {
-            "renepardon/PhLuzia": "dev-master"
+```json
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/renepardon/PhLuzia.git"
         }
+    ],
+    "require": {
+        "renepardon/PhLuzia": "dev-master"
     }
+}
+```
 
 ... and execute:
 
@@ -43,13 +45,15 @@ Add the following parts to your **composer.json** file...
 
 #### config/application.config.php
 
-    <?php
-    return array(
-        // This should be an array of module namespaces used in the application.
-        'modules' => array(
-            'PhLuzia',
-        ),
-    );
+```php
+<?php
+return array(
+    // This should be an array of module namespaces used in the application.
+    'modules' => array(
+        'PhLuzia',
+    ),
+);
+```
 
 Configuration
 -------------
@@ -59,6 +63,7 @@ Modify the default values and switch between Graphicsmagick/Imagemagick.
 
 Usage
 -----
+
 ```php
 <?php
 // Retrieve service instance.
