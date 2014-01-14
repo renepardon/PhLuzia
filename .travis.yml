@@ -1,15 +1,8 @@
 language: php
 
 php:
-  - 5.3.3
-  - 5.3
   - 5.4
   - 5.5
-
-# Composer has a 5.3.3 specific problem with openssl support on Travis.
-matrix:
-  allow_failures:
-    - php: 5.3.3
 
 before_script:
   - composer self-update
