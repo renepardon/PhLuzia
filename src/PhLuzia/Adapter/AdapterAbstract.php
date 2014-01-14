@@ -52,11 +52,11 @@ abstract class AdapterAbstract implements AdapterInterface
      * Initialize adapter with configuration options (defaults) and dynamic
      * options (image offset, target, ...)
      *
-     * @param Service $phMagick
+     * @param Service $phLuzia
      */
-    public function __construct(Service $phMagick)
+    public function __construct(Service $phLuzia)
     {
-        $this->service = $phMagick;
+        $this->service = $phLuzia;
         $this->options = $this->service->getOptions();
     }
 }
