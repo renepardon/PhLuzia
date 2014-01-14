@@ -2,7 +2,8 @@
 
 namespace PhMagick\Adapter;
 
-use PhMagick\PhMagick;
+use PhMagick\Command;
+use PhMagick\Service\PhMagick;
 use PhMagick\TextObject;
 
 /**
@@ -33,65 +34,40 @@ use PhMagick\TextObject;
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       http://www.francodacosta.com/phmagick
+ * @link       https://github.com/renepardon/PhMagick
  * @since      2013-01-09
  */
 class Decorations extends AdapterAbstract
 {
-    use AdapterTrait;
-
-    /**
-     * @var string
-     */
-    const IDENTIFIER = 'PhMagick\Adapter\Decorations';
-
-    /**
-     * Returns an array of names from methods the current adapter implements.
-     *
-     * @return mixed
-     */
-    public function getAvailableMethods()
-    {
-        return array(
-            'roundCorners',
-            'dropShadow',
-            'glow',
-            'fakePolaroid',
-            'polaroid',
-            'border',
-        );
-    }
-
     /**
      * Create round corners and apply to current image.
      *
-     * @param PhMagick $p
      * @param int $i Radius to use.
      *
      * @return PhMagick
      */
-    public function roundCorners(PhMagick $p, $i = 15)
+    public function roundCorners($i = 15)
     {
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' "' . $p->getSource() . '"';
-        $cmd .= ' ( +clone  -threshold -1 ';
-        $cmd .= "-draw \"fill black polygon 0,0 0,$i $i,0 fill white circle $i,$i $i,0\" ";
-        $cmd .= '( +clone -flip ) -compose Multiply -composite ';
-        $cmd .= '( +clone -flop ) -compose Multiply -composite ';
-        $cmd .= ') +matte -compose CopyOpacity -composite ';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        // @todo Get working with Graphicsmagick
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('"%s"', $this->service->getSource())
+            ->addOption(
+                '( +clone -threshold -1 -draw "fill black polygon 0,0 0,%d %d,0 fill white circle %d,%d %d,0" ( +clone -flip )',
+                $i, $i, $i, $i, $i
+            )
+            ->addOption('-compose Multiply -composite ( +clone -flop )')
+            ->addOption('-compose Multiply -composite )')
+            ->addOption('+matte')
+            ->addOption('-compose CopyOpacity')
+            ->addOption('-composite "%s"', $this->service->getDestination());
+        $cmd->exec();
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
-
-        return $p;
+        return $this->service;
     }
 
     /**
      * Create a drop shadow on current image.
      *
-     * @param PhMagick $p
      * @param string $color
      * @param int $offset
      * @param int $transparency
@@ -100,155 +76,158 @@ class Decorations extends AdapterAbstract
      *
      * @return PhMagick
      */
-    public function dropShadow(PhMagick $p, $color = '#000000', $offset = 4, $transparency = 60, $top = 4, $left = 4)
+    public function dropShadow($color = '#000000', $offset = 4, $transparency = 60, $top = 4, $left = 4)
     {
         $top = $top > 0 ? '+' . $top : $top;
         $left = $left > 0 ? '+' . $left : $left;
 
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' -page ' . $top . $left . ' "' . $p->getSource() . '"';
-        $cmd .= ' -matte ( +clone -background "' . $color . '" -shadow ' . $transparency . 'x4+' . $offset . '+' . $offset . ' ) +swap ';
-        $cmd .= ' -background none -mosaic ';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        // @todo Get working with Graphicsmagick
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('-page %d%d "%s"', $top, $left, $this->service->getSource())
+            ->addOption(
+                '-matte ( +clone -background "%d" -shadow %dx4+%d+%d ) +swap',
+                $color, $transparency, $offset, $offset
+            )
+            ->addOption('-background none -mosaic')
+            ->addOption('"%s"', $this->service->getDestination());
+        $cmd->exec();
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
-
-        return $p;
+        return $this->service;
     }
 
     /**
      * Create a glow effect.
      *
-     * @param PhMagick $p
      * @param string $color
      * @param int $offset
      * @param int $transparency
      *
      * @return PhMagick
      */
-    public function glow(PhMagick $p, $color = '#827f00', $offset = 10, $transparency = 60)
+    public function glow($color = '#827f00', $offset = 10, $transparency = 60)
     {
-        list ($w, $h) = $p->getInfo($p->getSource());
+        list ($w, $h) = $this->service->getInfo($this->service->getSource());
+        $cOffset = ($offset / 4);
 
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' "' . $p->getSource() . '" ';
-        $cmd .= '( +clone  -background "' . $color . '"  -shadow ' . $transparency . 'x' . $offset . '-' . ($offset / 4) . '+' . ($offset / 4) . ' ) +swap -background none   -layers merge  +repage  ';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        // @todo Get working with Graphicsmagic
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('"%s"', $this->service->getSource())
+            ->addOption(
+                '( +clone  -background "%s"  -shadow %dx%d-%d+%d ) +swap -background none -layers merge +repage',
+                $color, $transparency, $offset, $cOffset, $cOffset
+            )
+            ->addOption('"%s"', $this->service->getDestination());
+        $cmd->exec();
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
-
-        return $p;
+        return $this->service;
     }
 
     /**
      * Fake polaroid effect (white border and rotation)
      *
-     * @param PhMagick $p
-     * @param int $rotate         The Image will be rotated n degrees.
+     * @param int $rotate The Image will be rotated n degrees.
      * @param string $borderColor Drop shadow color.
-     * @param string $background  Image background color (use for jpegs or images
+     * @param string $background Image background color (use for jpegs or images
      *                            that do not support transparency or you will
      *                            end up with a black background).
      *
      * @return PhMagick
      */
-    public function fakePolaroid(PhMagick $p, $rotate = 6, $borderColor = "#fff", $background = "none")
+    public function fakePolaroid($rotate = 6, $borderColor = "#fff", $background = "none")
     {
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' "' . $p->getSource() . '"';
-        $cmd .= ' -bordercolor "' . $borderColor . '"  -border 6 -bordercolor grey60 -border 1 -background  "none"   -rotate ' . $rotate . ' -background  black  ( +clone -shadow 60x4+4+4 ) +swap -background  "' . $background . '"   -flatten';
-        $cmd .= ' ' . $p->getDestination();
+        // @todo Get working with Graphicsmagick
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('"%s"', $this->service->getSource())
+            ->addOption(
+                '-bordercolor "%s"  -border 6 -bordercolor grey60 -border 1 -background  "none"   -rotate %d -background  black  ( +clone -shadow 60x4+4+4 ) +swap -background  "%s"   -flatten',
+                $borderColor, $rotate, $background
+            )
+            ->addOption('"%s"', $this->service->getDestination());
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        $cmd->exec();
 
-        return $p;
+        return $this->service;
     }
 
     /**
-     * Real polaroid efect, supports text
+     * Real polaroid effect, supports text
      *
-     * @param PhMagick $p
-     * @param null $format         Text format for image label.
-     * @param int $rotation        The image will be rotated n degrees
-     * @param string $borderColor  Polaroid border (usually white)
-     * @param string $shaddowColor Drop shadow color.
-     * @param string $background   Image background color (use for jpegs or
+     * @param null $format Text format for image label.
+     * @param int $rotation The image will be rotated n degrees
+     * @param string $borderColor Polaroid border (usually white)
+     * @param string $shadowColor Drop shadow color.
+     * @param string $background Image background color (use for jpegs or
      *                             images that do not support transparency or
      *                             you will end up with a black background)
      *
      * @return PhMagick
      */
-    public function polaroid(PhMagick $p, $format = null, $rotation = 6, $borderColor = "snow", $shaddowColor = "black", $background = "none")
+    public function polaroid($format = null, $rotation = 6, $borderColor = "snow", $shadowColor = "black", $background = "none")
     {
-        if ('TextObject' != get_class($format)) {
+        $formatName = (is_object($format)) ? explode('\\', get_class($format)) : array();
+
+        if ('TextObject' != end($formatName)) {
             $tmp = new TextObject();
-            $tmp->setText($format);
+
+            if (is_string($format)) {
+                $tmp->setText($format);
+            }
+
             $format = $tmp;
         }
 
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' "' . $p->getSource() . '"';
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('"%s"', $this->service->getSource());
 
         if ($format->getBackground() !== false) {
-            $cmd .= ' -background "' . $format->getBackground() . '"';
+            $cmd->addOption('-background "%s"', $format->getBackground());
         }
 
         if ($format->getColor() !== false) {
-            $cmd .= ' -fill "' . $format->getColor() . '"';
+            $cmd->addOption('-fill "%s"', $format->getColor());
         }
 
         if ($format->getFont() !== false) {
-            $cmd .= ' -font ' . $format->getFont();
+            $cmd->addOption('-font %s', $format->getFont());
         }
 
         if ($format->getFontSize() !== false) {
-            $cmd .= ' -pointsize ' . $format->getFontSize();
+            $cmd->addOption('-pointsize %d', $format->getFontSize());
         }
 
         if ($format->getGravity() !== false) {
-            $cmd .= ' -gravity ' . $format->getGravity();
+            $cmd->addOption('-gravity %s', $format->getGravity());
         }
 
         if ($format->getText() != '') {
-            $cmd .= ' -set caption "' . $format->getText() . '"';
+            $cmd->addOption('-set caption "%s"', $format->getText());
         }
 
-        $cmd .= ' -bordercolor "' . $borderColor . '" -background "' . $background . '" -polaroid ' . $rotation . ' -background "' . $background . '" -flatten ';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        $cmd->addOption('-bordercolor "%s" -background "%s" -polaroid %d -background "%s" -flatten', $borderColor, $background, $rotation, $background)
+            ->addOption('"%s"', $this->service->getDestination());
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        $cmd->exec();
 
-        return $p;
+        return $this->service;
     }
 
     /**
      * Create a border around current image.
      *
-     * @param PhMagick $p
      * @param string $borderColor
-     * @param string $borderSize
+     * @param int $borderSize
      *
      * @return PhMagick
      */
-    public function border(PhMagick $p, $borderColor = "#000", $borderSize = "1")
+    public function border($borderColor = "#000", $borderSize = 1)
     {
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' "' . $p->getSource() . '"';
-        $cmd .= ' -bordercolor "' . $borderColor . '"  -border ' . $borderSize;
-        $cmd .= ' "' . $p->getDestination() . '"';
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('"%s"', $this->service->getSource())
+            ->addOption('-bordercolor "%s" -border %d', $borderColor, $borderSize)
+            ->addOption('"%s"', $this->service->getDestination());
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        $cmd->exec();
 
-        return $p;
+        return $this->service;
     }
 }

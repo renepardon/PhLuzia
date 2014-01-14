@@ -30,15 +30,18 @@ namespace PhMagick;
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       http://www.francodacosta.com/phmagick
+ * @link       https://github.com/renepardon/PhMagick
  * @since      2013-01-09
- * @deprecated It makes no sense to have a class only for two constants.
  */
 class History
 {
+    /**
+     * @var int
+     */
     const TO_ARRAY = 0;
-    const TO_CSV   = 1;
 
-    private function __construct()
-    {}
+    /**
+     * @var int
+     */
+    const TO_CSV = 1;
 }

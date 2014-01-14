@@ -2,7 +2,8 @@
 
 namespace PhMagick\Adapter;
 
-use PhMagick\PhMagick;
+use PhMagick\Command;
+use PhMagick\Service\PhMagick;
 use PhMagick\TextObject;
 
 /**
@@ -33,74 +34,52 @@ use PhMagick\TextObject;
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       http://www.francodacosta.com/phmagick
+ * @link       https://github.com/renepardon/PhMagick
  * @since      2013-01-09
  */
 class Text extends AdapterAbstract
 {
-    use AdapterTrait;
-
-    /**
-     * @var string
-     */
-    const IDENTIFIER = 'PhMagick\Adapter\Text';
-
-    /**
-     * Returns an array of names from methods the current adapter implements.
-     *
-     * @return mixed
-     */
-    public function getAvailableMethods()
-    {
-        return array(
-            'fromString',
-        );
-    }
-
     /**
      * Draws an image with the submitted string. Useful for watermarks.
      *
-     * @param PhMagick $p
      * @param string $text       The text to draw an image from
      * @param TextObject $format The text configuration
      *
      * @return PhMagick
      */
-    public function fromString(PhMagick $p, $text = '', TextObject $format = null)
+    public function fromString($text = '', TextObject $format = null)
     {
         if (is_null($format)) {
             $format = new TextObject();
         }
 
-        $cmd = $p->getBinary('convert');
+        $cmd = new Command('convert', $this->service);
 
-        if ($format->getBackground() !== false) {
-            $cmd .= ' -background "' . $format->getBackground() . '"';
+        if ($format->getBackground()) {
+            $cmd->addOption('-background "%s"', $format->getBackground());
         }
 
         if ($format->getColor() !== false) {
-            $cmd .= ' -fill "' . $format->getColor() . '"';
+            $cmd->addOption('-fill "%s"', $format->getColor());
         }
 
         if ($format->getFont() !== false) {
-            $cmd .= ' -font ' . $format->getFont();
+            $cmd->addOption('-font %s', $format->getFont());
         }
 
         if ($format->getFontSize() !== false) {
-            $cmd .= ' -pointsize ' . $format->getFontSize();
+            $cmd->addOption('-pointsize "%d"', $format->getFontSize());
         }
 
         if (($format->getText() != '') && ($text = '')) {
             $text = $format->getText();
         }
 
-        $cmd .= ' label:"' . $text . '"';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        $cmd->addOption('label:"%s"', $text);
+        $cmd->addOption('"%s"', $this->service->getDestination());
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        $cmd->exec();
 
-        return $p;
+        return $this->service;
     }
 }

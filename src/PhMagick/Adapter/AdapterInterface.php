@@ -30,22 +30,9 @@ namespace PhMagick\Adapter;
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       http://www.francodacosta.com/phmagick
+ * @link       https://github.com/renepardon/PhMagick
  * @since      2013-01-09
  */
 interface AdapterInterface
 {
-    /**
-     * Returns an unique identifier for the current adapter.
-     *
-     * @return mixed
-     */
-    public function getIdentifier();
-
-    /**
-     * Returns an array of names from methods the current adapter implements.
-     *
-     * @return mixed
-     */
-    public function getAvailableMethods();
 }

@@ -2,6 +2,9 @@
 
 namespace PhMagick\Adapter;
 
+use PhMagick\Service\PhMagick as Service;
+use Zend\Config\Config;
+
 /**
  * Image manipulation library.
  *
@@ -30,10 +33,30 @@ namespace PhMagick\Adapter;
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       http://www.francodacosta.com/phmagick
+ * @link       https://github.com/renepardon/PhMagick
  * @since      2013-01-09
  */
 abstract class AdapterAbstract implements AdapterInterface
 {
+    /**
+     * @var array|Config
+     */
+    protected $options = array();
 
+    /**
+     * @var null|Service
+     */
+    protected $service = null;
+
+    /**
+     * Initialize adapter with configuration options (defaults) and dynamic
+     * options (image offset, target, ...)
+     *
+     * @param Service $phMagick
+     */
+    public function __construct(Service $phMagick)
+    {
+        $this->service = $phMagick;
+        $this->options = $this->service->getOptions();
+    }
 }

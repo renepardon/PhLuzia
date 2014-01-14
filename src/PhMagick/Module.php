@@ -37,7 +37,7 @@ use Zend\Mvc\MvcEvent;
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       http://www.francodacosta.com/phmagick
+ * @link       https://github.com/renepardon/PhMagick
  * @since      2013-01-09
  */
 class Module implements
@@ -75,7 +75,7 @@ class Module implements
         return array(
             AutoloaderFactory::STANDARD_AUTOLOADER => array(
                 StandardAutoloader::LOAD_NS => array(
-                    __NAMESPACE__ => __DIR__, // . '/src/' . __NAMESPACE__,
+                    __NAMESPACE__ => __DIR__,
                 ),
             ),
         );

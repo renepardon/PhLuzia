@@ -2,9 +2,10 @@
 
 namespace PhMagick\Adapter;
 
+use PhMagick\Command;
 use PhMagick\Gravity;
 use PhMagick\History;
-use PhMagick\PhMagick;
+use PhMagick\Service\PhMagick;
 
 /**
  * Image manipulation library.
@@ -34,110 +35,86 @@ use PhMagick\PhMagick;
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       http://www.francodacosta.com/phmagick
+ * @link       https://github.com/renepardon/PhMagick
  * @since      2013-01-09
  */
 class Compose extends AdapterAbstract
 {
-    use AdapterTrait;
-
-    /**
-     * @var string
-     */
-    const IDENTIFIER = 'PhMagick\Adapter\Compose';
-
-    /**
-     * Returns an array of names from methods the current adapter implements.
-     *
-     * @return mixed
-     */
-    public function getAvailableMethods()
-    {
-        return array(
-            'watermark',
-            'tile',
-            'acquireFrame',
-        );
-    }
-
     /**
      * Add's a watermark to current image.
      *
      * composite -gravity SouthEast watermark.png original-image.png output-image.png
      *
-     * @param PhMagick $p
      * @param $watermarkImage Image path.
      * @param string $gravity The placement of the watermark.
      * @param int $transparency 1 to 100, the transparency of the watermark (100 = opaque).
      *
      * @return PhMagick
      */
-    public function watermark(PhMagick $p, $watermarkImage, $gravity = Gravity::Center, $transparency = 50)
+    public function watermark($watermarkImage, $gravity = Gravity::Center, $transparency = 50)
     {
-        $cmd = $p->getBinary('composite');
-        $cmd .= ' -dissolve ' . $transparency;
-        $cmd .= ' -gravity ' . $gravity;
-        $cmd .= ' ' . $watermarkImage;
-        $cmd .= ' "' . $p->getSource() . '"';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        $cmd = new Command('composite', $this->service);
+        $cmd->addOption('-dissolve %d', $transparency)
+            ->addOption('-gravity %s', $gravity)
+            ->addOption($watermarkImage)
+            ->addOption('"%s"', $this->service->getSource())
+            ->addOption('"%s"', $this->service->getDestination());
+        $cmd->exec();
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        return $this->service;
 
-        return $p;
     }
 
     /**
      * Joins several images in one tab strip.
      *
-     * @param PhMagick $p
-     * @param array $paths Array of strings, The paths of images to join.
-     * @param string $tileWidth
-     * @param int $tileHeight
+     * @param array $paths           Array of strings, The paths of images to join.
+     * @param string|int $tileWidth
+     * @param string|int $tileHeight
      *
      * @return PhMagick
      */
-    public function tile(PhMagick $p, array $paths = null, $tileWidth = '', $tileHeight = 1)
+    public function tile(array $paths = null, $tileWidth = 0, $tileHeight = 1)
     {
         if (is_null($paths)) {
-            $paths = $p->getHistory(History::TO_ARRAY);
+            $paths = $this->service->getHistory(History::TO_ARRAY);
         }
 
-        $cmd = $p->getBinary('montage');
-        $cmd .= ' -geometry x+0+0 -tile ' . $tileWidth . 'x' . $tileHeight . ' ';
-        $cmd .= implode(' ', $paths);
-        $cmd .= ' "' . $p->getDestination() . '"';
+        $cmd = new Command('montage', $this->service);
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        if (PHMAGICK_LIBRARY_GRAPHICSMAGICK == $this->service->getOptions()['library']) {
+            // @todo Get working with Graphicsmagick
+            $cmd->addOption('-tile %dx%d -geometry 0x0+0+0', $tileWidth, $tileHeight);
+        } else {
+            $cmd->addOption('-geometry x+0+0 -tile %dx%d', $tileWidth, $tileHeight);
+        }
 
-        return $p;
+        $cmd->addOption(implode(' ', $paths))
+            ->addOption('"%s"', $this->service->getDestination());
+        $cmd->exec();
+
+        return $this->service;
     }
 
     /**
      * Attempts to create an image(s) from a File (PDF & Avi are supported on most systems).
      * It grabs the first frame / page from the source file.
      *
-     * @param PhMagick $p
+     * Imagemagick first converts all frames then deletes all but the first.
+     *
      * @param $file The path to file.
      * @param int $frames
      *
      * @return PhMagick
      */
-    public function acquireFrame(PhMagick $p, $file, $frames = 0)
+    public function acquireFrame($file, $frames = 0)
     {
-        // $cmd = 'echo "" | '; //just a workarround for videos,
-        //                    imagemagick first converts all frames then deletes all but the first
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' "' . $file . '"[' . $frames . ']';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('"%s"[%d]', $file, $frames)
+            ->addOption('"%s"', $this->service->getDestination());
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        $cmd->exec();
 
-        return $p;
+        return $this->service;
     }
 }

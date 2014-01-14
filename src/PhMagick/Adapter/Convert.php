@@ -2,7 +2,8 @@
 
 namespace PhMagick\Adapter;
 
-use PhMagick\PhMagick;
+use PhMagick\Command;
+use PhMagick\Service\PhMagick;
 
 /**
  * Image manipulation library.
@@ -32,30 +33,11 @@ use PhMagick\PhMagick;
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       http://www.francodacosta.com/phmagick
+ * @link       https://github.com/renepardon/PhMagick
  * @since      2013-01-09
  */
 class Convert extends AdapterAbstract
 {
-    use AdapterTrait;
-
-    /**
-     * @var string
-     */
-    const IDENTIFIER = 'PhMagick\Adapter\Convert';
-
-    /**
-     * Returns an array of names from methods the current adapter implements.
-     *
-     * @return mixed
-     */
-    public function getAvailableMethods()
-    {
-        return array(
-            'convert',
-        );
-    }
-
     /**
      * Converts from one format to another.
      *
@@ -65,20 +47,16 @@ class Convert extends AdapterAbstract
      * to structure your convert command or see below for example usages of
      * the command.
      *
-     * @param PhMagick $p
-     *
      * @return PhMagick
      */
-    public function convert(PhMagick $p)
+    public function convert()
     {
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' -quality ' . $p->getImageQuality();
-        $cmd .= ' "' . $p->getSource() . '"  "' . $p->getDestination() . '"';
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('-quality %d', $this->service->getImageQuality())
+            ->addOption('"%s"', $this->service->getSource())
+            ->addOption('"%s"', $this->service->getDestination());
+        $cmd->exec();
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
-
-        return $p;
+        return $this->service;
     }
 }

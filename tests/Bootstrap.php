@@ -85,3 +85,5 @@ if (defined('TESTS_ZEND_OB_ENABLED') && constant('TESTS_ZEND_OB_ENABLED')) {
  * Unset global variables that are no longer needed.
  */
 unset($zfRoot, $zfCoreLibrary, $zfCoreTests, $path);
+
+$moduleConfig = new \Zend\Config\Config(require_once realpath(dirname(__DIR__) . '/config/module.config.php'));

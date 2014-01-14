@@ -1,8 +1,9 @@
 <?php
 
-namespace PhMagick;
+namespace PhMagick\Service;
 
-use PhMagick\Adapter\AdapterInterface;
+use PhMagick\History;
+use Zend\Config\Config;
 
 /**
  * Image manipulation library.
@@ -27,33 +28,20 @@ use PhMagick\Adapter\AdapterInterface;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package    PhMagick
+ * @package    PhMagick\Service
  * @author     Christoph, René Pardon <christoph@renepardon.de>
- * @author     Nuno Costa, <sven@francodacosta.com> (Initial Author)
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       http://www.francodacosta.com/phmagick
+ * @link       https://github.com/renepardon/PhMagick
  * @since      2013-01-09
  */
 class PhMagick
 {
     /**
-     * @var array
+     * @var array|\Zend\Config\Config
      */
-    private $_availableMethods = array();
-
-    /**
-     * @var array
-     */
-    protected $loadedPlugins = array();
-
-    /**
-     * win/lin is the indicator for the value.
-     *
-     * @var boolean
-     */
-    protected $escapeChars = null;
+    protected $options = array();
 
     /**
      * @var array
@@ -96,21 +84,6 @@ class PhMagick
     protected $imageQuality = 100;
 
     /**
-     * We don't need all functionality for every operation. For this we have an
-     * adapter structure to only load features we need for current tasks.
-     *
-     * @var array
-     */
-    protected $adapters = array();
-
-    /**
-     * Throws/Triggers Exceptions and Errors if set to true.
-     *
-     * @var bool
-     */
-    protected $debug = false;
-
-    /**
      * Contains executed commands.
      *
      * @var array
@@ -118,61 +91,23 @@ class PhMagick
     private $log = array();
 
     /**
-     * Initialize PhMagick with source file and target/destination path.
+     * Initialize PhMagick service with configuration options.
      *
-     * @param string $sourceFile
-     * @param string $destinationFile
+     * @param Config $options
      */
-    public function __construct($sourceFile, $destinationFile = null)
+    public function __construct(Config $options)
     {
-        $this->originalFile = (string)$sourceFile;
-        $this->setSource($sourceFile);
-
-        if (null === $destinationFile) {
-            $this->setDestination($this->getSource());
-        } else {
-            $this->setDestination($destinationFile);
-        }
-
-        if (is_null($this->escapeChars)) {
-            $this->escapeChars = !(strtolower(substr(php_uname('s'), 0, 3)) == "win");
-        }
+        $this->options = $options;
     }
 
     /**
-     * Execute the command against installed library (Imagemagick/Graphicsmagick)
+     * Gets $options.
      *
-     * @param string $cmd
-     * @return null|string|int
+     * @return array|Config
      */
-    public function execute($cmd)
+    public function getOptions()
     {
-        $ret = null;
-        $out = array();
-
-        if ($this->escapeChars) {
-            $cmd = str_replace('(', '\(', $cmd);
-            $cmd = str_replace(')', '\)', $cmd);
-        }
-
-        exec($cmd . ' 2>&1', $out, $ret);
-
-        if ($ret != 0) {
-            if ($this->debug) {
-                trigger_error(new \Exception('Error executing "' . $cmd .
-                        '" <br>return code: ' . $ret . ' <br>command output :"' .
-                        implode("<br>", $out) . '"'), E_USER_NOTICE
-                );
-            }
-        }
-
-        $this->log[] = array(
-            'cmd' => $cmd,
-            'return' => $ret,
-            'output' => $out
-        );
-
-        return $ret;
+        return $this->options;
     }
 
     /**
@@ -269,81 +204,36 @@ class PhMagick
      */
     public function __call($method, $args)
     {
-        foreach ($this->_availableMethods as $adapterIdentifier => $methods) {
+        /*foreach ($this->_availableMethods as $adapterIdentifier => $methods) {
             if (method_exists($this->adapters[$adapterIdentifier], $method)) {
                 array_unshift($args, $this);
                 return call_user_func_array(array($this->adapters[$adapterIdentifier], $method), $args);
             }
+        }*/
+
+        $class = 'PhMagick\Adapter\\' . ucfirst($method);
+
+        if (class_exists($class)) {
+            return new $class($this);
         }
 
         throw new \Exception ('Call to undefined method: ' . $method);
     }
 
     /**
-     * Adds an additional adapter to $adapters.
+     * Check if provided libraray name equals the configured library.
      *
-     * @param AdapterInterface $adapter
+     * @param string $library
      *
-     * @return PhMagick
+     * @return bool
      */
-    public function addAdapter(AdapterInterface $adapter)
+    public function isLibrary($library)
     {
-        // Prevent adapters from being added more than once by using the unique
-        // identifier as key for our adapters.
-        $identifier = $adapter->getIdentifier();
-        $this->adapters[$identifier] = $adapter;
-        // Retrieve the available methods from adapter.
-        $this->_availableMethods[$identifier] = $adapter->getAvailableMethods();
-
-        return $this;
-    }
-
-    /**
-     * Sets multiple adapters at once.
-     *
-     * @param array $adapters
-     *
-     * @return PhMagick
-     */
-    public function setAdapters(array $adapters)
-    {
-        array_walk($adapters, array($this, '_convertAdapters'));
-
-        // Reset, because we "set" adapters.
-        $this->adapters = array();
-
-        foreach ($adapters as $adapter) {
-            $this->addAdapter($adapter);
+        if ($library == $this->getOptions()['library']) {
+            return true;
         }
 
-        return $this;
-    }
-
-    /**
-     * Covnert $adapter to correct format for $adapters.
-     *
-     * @param string|AdapterInterface $adapter
-     * @param string $key
-     *
-     * @throws \Exception
-     */
-    private function _convertAdapters(&$adapter, $key)
-    {
-        // That's what we want :)
-        if ($adapter instanceof AdapterInterface) {
-            return;
-        }
-
-        if (is_string($adapter)) {
-            $class = 'PhMagick\Adapter\\' . ucfirst($adapter);
-
-            if (class_exists($class)) {
-                $adapter = new $class();
-                return;
-            }
-        }
-
-        throw new \Exception('Unknown adapter/type provided');
+        return false;
     }
 
     /**
@@ -377,7 +267,15 @@ class PhMagick
      */
     public function setSource($path)
     {
+        if (null === $this->originalFile) {
+            $this->originalFile = (string)$path;
+        }
+
         $this->source = str_replace(' ', '\ ', (string)$path);
+
+        if (null === $this->getDestination()) {
+            $this->setDestination($this->getSource());
+        }
 
         return $this;
     }
@@ -416,9 +314,13 @@ class PhMagick
     {
         if (($this->destination == '')) {
             $source = $this->getSource();
-            $ext = end(explode('.', $source));
+            $sourceParts = explode('.', $source);
+            $ext = end($sourceParts);
             $this->destination = sprintf("%s/%s.%s", dirname($source), md5(microtime()), $ext);
         }
+
+        // @todo add parameter (boolean) to check if the requested file operation
+        // needs a PNG and trigger a warning if so but another file type ($ext) gets returned.
 
         return $this->destination;
     }
@@ -516,7 +418,7 @@ class PhMagick
      */
     public function clearHistory()
     {
-        unset ($this->history);
+        unset($this->history);
         $this->history = array();
 
         return $this;

@@ -2,8 +2,6 @@
 
 namespace PhMagick\Adapter;
 
-use PhMagick\PhMagick;
-
 /**
  * Image manipulation library.
  *
@@ -32,42 +30,21 @@ use PhMagick\PhMagick;
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       http://www.francodacosta.com/phmagick
+ * @link       https://github.com/renepardon/PhMagick
  * @since      2013-01-09
  */
 class Cli extends AdapterAbstract
 {
-    use AdapterTrait;
-
-    /**
-     * @var string
-     */
-    const IDENTIFIER = 'PhMagick\Adapter\Cli';
-
-    /**
-     * Returns an array of names from methods the current adapter implements.
-     *
-     * @return mixed
-     */
-    public function getAvailableMethods()
-    {
-        return array(
-            'cmd',
-        );
-    }
-
     /**
      * Execute the provided command directly.
      *
-     * @param PhMagick $p
      * @param $string
      *
      * @return void
      * @deprecated          This method is not yet used and should be removed or updated
      *                      to work as expected.
      */
-    public function cmd(PhMagick $p, $string)
+    public function cmd($string)
     {
-
 	}
 }

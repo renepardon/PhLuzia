@@ -2,7 +2,8 @@
 
 namespace PhMagick\Adapter;
 
-use PhMagick\PhMagick;
+use PhMagick\Command;
+use PhMagick\Service\PhMagick;
 
 /**
  * Image manipulation library.
@@ -32,100 +33,75 @@ use PhMagick\PhMagick;
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       http://www.francodacosta.com/phmagick
+ * @link       https://github.com/renepardon/PhMagick
  * @since      2013-01-09
  */
 class Resize extends AdapterAbstract
 {
-    use AdapterTrait;
-
-    /**
-     * @var string
-     */
-    const IDENTIFIER = 'PhMagick\Adapter\Resize';
-
-    /**
-     * Returns an array of names from methods the current adapter implements.
-     *
-     * @return mixed
-     */
-    public function getAvailableMethods()
-    {
-        return array(
-            'resize',
-            'resizeExactly',
-            'onTheFly',
-        );
-    }
-
     /**
      * Resize current image.
      *
-     * @param PhMagick $p
      * @param $width
      * @param int $height
-     * @param bool $exactDimentions
+     * @param bool $exactDimensions
      *
      * @return PhMagick
      */
-    public function resize(PhMagick $p, $width, $height = 0, $exactDimentions = false)
+    public function resize($width, $height = 0, $exactDimensions = false)
     {
-        $modifier = $exactDimentions ? '!' : '>';
+        $modifier = $exactDimensions ? '!' : '>';
 
         // If $width or $height == 0 then we want to resize to fit one measure.
         // If any of them is sent as 0 resize will fail because we are trying to resize to 0 px.
         $width = $width == 0 ? '' : $width;
         $height = $height == 0 ? '' : $height;
 
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' -scale "' . $width . 'x' . $height . $modifier;
-        $cmd .= '" -quality ' . $p->getImageQuality();
-        $cmd .= ' -strip ';
-        $cmd .= ' "' . $p->getSource() . '" "' . $p->getDestination() . '"';
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('-scale "%dx%d%s"', $width, $height, $modifier)
+            ->addOption('-quality %d', $this->service->getImageQuality())
+            ->addOption('-strip')
+            ->addOption('"%s" "%s"',
+                $this->service->getSource(),
+                $this->service->getDestination());
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        $cmd->exec();
 
-        return $p;
+        return $this->service;
     }
 
     /**
      * Tries to resize an image to the exact size wile mantaining aspect ratio,
      * the image will be cropped to fit the measures.
      *
-     * @param PhMagick $p
-     * @param $width
-     * @param $height
+     * @param int $width
+     * @param int $height
      *
      * @return PhMagick
      */
-    public function resizeExactly(PhMagick $p, $width, $height)
+    public function resizeExactly($width, $height)
     {
-        // Requires Crop plugin.
-        $p->addAdapter(new Crop());
-
-        list($w, $h) = $p->getInfo($p->getSource());
+        list($w, $h) = $this->service->getInfo($this->service->getSource());
 
         if ($w > $h) {
             $h = $height;
-            $w = 0;
+            //$w = 0;
         } else {
-            $h = 0;
+            //$h = 0;
             $w = $width;
         }
 
-        return $p->resize($w, $h)->crop($width, $height);
+        $this->resize($w, $h)->crop($width, $height);
+
+        return $this->service;
     }
 
     /**
      * Creates a thumbnail of an image if it doesn't exists.
      *
-     * @param PhMagick $p
      * @param $imageUrl             The iamge URI
      * @param $width
      * @param $height
-     * @param bool $exactDimentions If false: resizes the image to the exact
+     * @param bool $exactDimensions If false: resizes the image to the exact
      *                              porportions (aspect ratio not preserved).
      *                              If true: preserves aspect ratio, only
      *                              resises if image is bigger than specified measures
@@ -134,7 +110,7 @@ class Resize extends AdapterAbstract
      *
      * @return string The thumbnail URI
      */
-    public function onTheFly(PhMagick $p, $imageUrl, $width, $height, $exactDimentions = false, $webPath = '', $physicalPath = '')
+    public function onTheFly($imageUrl, $width, $height, $exactDimensions = false, $webPath = '', $physicalPath = '')
     {
         // Convert web path to physical.
         $basePath = str_replace($webPath, $physicalPath, dirname($imageUrl));
@@ -143,11 +119,11 @@ class Resize extends AdapterAbstract
         // Naming the new thumbnail.
         $thumbnailFile = $basePath . '/' . $width . '_' . $height . '_' . basename($imageUrl);
 
-        $p->setSource($sourceFile);
-        $p->setDestination($thumbnailFile);
+        $this->service->setSource($sourceFile);
+        $this->service->setDestination($thumbnailFile);
 
         if (!file_exists($thumbnailFile)) {
-            $p->resize($p, $width, $height, $exactDimentions);
+            $this->resize($width, $height, $exactDimensions);
         }
 
         if (!file_exists($thumbnailFile)) {

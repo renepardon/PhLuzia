@@ -2,8 +2,9 @@
 
 namespace PhMagick\Adapter;
 
+use PhMagick\Command;
 use PhMagick\Gravity;
-use PhMagick\PhMagick;
+use PhMagick\Service\PhMagick;
 
 /**
  * Image manipulation library.
@@ -33,34 +34,14 @@ use PhMagick\PhMagick;
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       http://www.francodacosta.com/phmagick
+ * @link       https://github.com/renepardon/PhMagick
  * @since      2013-01-09
  */
 class Crop extends AdapterAbstract
 {
-    use AdapterTrait;
-
-    /**
-     * @var string
-     */
-    const IDENTIFIER = 'PhMagick\Adapter\Crop';
-
-    /**
-     * Returns an array of names from methods the current adapter implements.
-     *
-     * @return mixed
-     */
-    public function getAvailableMethods()
-    {
-        return array(
-            'crop',
-        );
-    }
-
     /**
      * Crop current image.
      *
-     * @param PhMagick $p
      * @param $width
      * @param $height
      * @param int $top The Y coordinate for the left corner of the crop rectangule
@@ -69,23 +50,20 @@ class Crop extends AdapterAbstract
      *
      * @return PhMagick
      */
-    public function crop(PhMagick $p, $width, $height, $top = 0, $left = 0, $gravity = Gravity::Center)
+    public function crop($width, $height, $top = 0, $left = 0, $gravity = Gravity::Center)
     {
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' ' . $p->getSource();
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption($this->service->getSource());
 
-        if (($gravity != '') || ($gravity != Gravity::None)) {
-            $cmd .= ' -gravity ' . $gravity;
+        if ('' != $gravity || Gravity::None != $gravity) {
+            $cmd->addOption('-gravity %s', $gravity);
         }
 
-        $cmd .= ' -crop ' . (int)$width . 'x' . (int)$height;
-        $cmd .= '+' . $left . '+' . $top;
-        $cmd .= ' ' . $p->getDestination();
+        $cmd->addOption('-crop %dx%d+%d+%d', $width, $height, $left, $top)
+            ->addOption($this->service->getDestination());
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        $cmd->exec();
 
-        return $p;
+        return $this->service;
     }
 }

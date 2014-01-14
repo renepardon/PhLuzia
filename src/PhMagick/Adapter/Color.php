@@ -2,7 +2,8 @@
 
 namespace PhMagick\Adapter;
 
-use PhMagick\PhMagick;
+use PhMagick\Command;
+use PhMagick\Service\PhMagick;
 
 /**
  * Image manipulation library.
@@ -32,61 +33,40 @@ use PhMagick\PhMagick;
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       http://www.francodacosta.com/phmagick
+ * @link       https://github.com/renepardon/PhMagick
  * @since      2013-01-09
  */
 class Color extends AdapterAbstract
 {
-    use AdapterTrait;
-
-    /**
-     * @var string
-     */
-    const IDENTIFIER = 'PhMagick\Adapter\Color';
-
-    /**
-     * Returns an array of names from methods the current adapter implements.
-     *
-     * @return mixed
-     */
-    public function getAvailableMethods()
-    {
-        return array(
-            'darken',
-            'brighten',
-            'toGreyScale',
-            'invertColors',
-            'sepia',
-            'autoLevels',
-        );
-    }
-
     /**
      * Makes current image darker.
      *
-     * @param PhMagick $p
      * @param int $alphaValue
      *
      * @return PhMagick
      */
-    function darken(PhMagick $p, $alphaValue = 50)
+    public function darken($alphaValue = 50)
     {
         $percent = 100 - (int)$alphaValue;
 
         // Get original file dimensions.
-        list ($width, $height) = $p->getInfo();
+        list ($width, $height) = $this->service->getInfo();
 
-        $cmd = $p->getBinary('composite');
-        $cmd .= ' -blend  ' . $percent . ' ';
-        $cmd .= '"' . $p->getSource() . '"';
-        $cmd .= ' -size ' . $width . 'x' . $height . ' xc:black ';
-        $cmd .= '-matte "' . $p->getDestination() . '"';
+        $cmd = new Command('composite', $this->service);
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        if (PHMAGICK_LIBRARY_GRAPHICSMAGICK == $this->service->getOptions()['library']) {
+            $cmd->addOption('-dissolve %d', $percent);
+        } else {
+            $cmd->addOption('-blend %d', $percent);
+        }
 
-        return $p;
+        $cmd->addOption('"%s"', $this->service->getSource())
+            ->addOption('-size %dx%d xc:black', $width, $height)
+            ->addOption('-matte "%s"', $this->service->getDestination());
+
+        $cmd->exec();
+
+        return $this->service;
     }
 
     /**
@@ -94,97 +74,101 @@ class Color extends AdapterAbstract
      *
      * 100%: white , 0%: original color (no change)
      *
-     * @param PhMagick $p
      * @param int $alphaValue
      *
      * @return PhMagick
      */
-    function brighten(PhMagick $p, $alphaValue = 50)
+    public function brighten($alphaValue = 50)
     {
         $percent = 100 - (int)$alphaValue;
 
         // Get original file dimensions.
-        list ($width, $height) = $p->getInfo();
+        list ($width, $height) = $this->service->getInfo();
 
-        $cmd = $p->getBinary('composite');
-        $cmd .= ' -blend  ' . $percent . ' ';
-        $cmd .= '"' . $p->getSource() . '"';
-        $cmd .= ' -size ' . $width . 'x' . $height . ' xc:white ';
-        $cmd .= '-matte "' . $p->getDestination() . '"';
+        $cmd = new Command('composite', $this->service);
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        if (PHMAGICK_LIBRARY_GRAPHICSMAGICK == $this->service->getOptions()['library']) {
+            $cmd->addOption('-dissolve %d', $percent);
+        } else {
+            $cmd->addOption('-blend %d', $percent);
+        }
 
-        return $p;
+        $cmd->addOption('"%s"', $this->service->getSource())
+            ->addOption('-size %dx%d xc:white', $width, $height)
+            ->addOption('-matte "%s"', $this->service->getDestination());
+
+        $cmd->exec();
+
+        return $this->service;
     }
 
     /**
      * Convert current image to grey scale.
      *
-     * @param PhMagick $p
      * @param int $enhance
      *
      * @return PhMagick
      */
-    function toGreyScale(PhMagick $p, $enhance = 2)
+    public function toGreyScale($enhance = 2)
     {
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' -modulate 100,0 ';
-        $cmd .= ' -sigmoidal-contrast ' . $enhance . 'x50%';
-        $cmd .= ' -background "none" "' . $p->getSource() . '"';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('-modulate 100,0');
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        if (PHMAGICK_LIBRARY_IMAGEMAGICK == $this->service->getOptions()['library']) {
+            $cmd->addOption('-sigmoidal-contrast %dx50%%', $enhance);
+        }
 
-        return $p;
+        $cmd->addOption('-background "none" "%s"', $this->service->getSource())
+            ->addOption('"%s"', $this->service->getDestination());
+        $cmd->exec();
+
+        return $this->service;
     }
 
     /**
      * Inverts the image colors.
      *
-     * @param PhMagick $p
-     *
      * @return PhMagick
      */
-    function invertColors(PhMagick $p)
+    public function invertColors()
     {
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' "' . $p->getSource() . '"';
-        $cmd .= ' -negate ';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('"%s"', $this->service->getSource());
+        $cmd->addOption('-negate');
+        $cmd->addOption('"%s"', $this->service->getDestination());
+        $cmd->exec();
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
-
-        return $p;
+        return $this->service;
     }
 
     /**
      * Applies sepia filter to current image.
      *
-     * @param PhMagick $p
-     * @param int $tone
+     * @param int $tone Ignored with Graphicsmagick
      *
      * @return PhMagick
      */
-    function sepia(PhMagick $p, $tone = 90)
+    public function sepia($tone = 90)
     {
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' -sepia-tone ' . $tone . '% ';
-        $cmd .= ' -modulate 100,50 ';
-        $cmd .= ' -normalize ';
-        $cmd .= ' -background "none" "' . $p->getSource() . '"';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        $cmd = new Command('convert', $this->service);
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        if (PHMAGICK_LIBRARY_GRAPHICSMAGICK == $this->service->getOptions()['library']) {
+            // @todo Play with values to get real sepia!!!
+            $cmd->addOption('-modulate 115,0,100')
+                ->addOption('-colorize 7,21,50')
+                ->addOption('"%s"', $this->service->getSource());
+        } else {
+            $cmd->addOption('-sepia-tone %d%%', $tone)
+                ->addOption('-modulate 100,50')
+                ->addOption('-normalize')
+                ->addOption('-set colorspace RGB')
+                ->addOption('-background "none" "%s"', $this->service->getSource());
+        }
 
-        return $p;
+        $cmd->addOption('"%s"', $this->service->getDestination());
+        $cmd->exec();
+
+        return $this->service;
     }
 
     /**
@@ -192,21 +176,16 @@ class Color extends AdapterAbstract
      *
      * Normalization of image.
      *
-     * @param PhMagick $p
-     *
      * @return PhMagick
      */
-    function autoLevels(PhMagick $p)
+    public function autoLevels()
     {
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' -normalize ';
-        $cmd .= ' -background "none" "' . $p->getSource() . '"';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('-normalize') // @todo Fix Graphicsmagic? version - Image becomes red.
+            ->addOption('-background "none" "%s"', $this->service->getSource());
+        $cmd->addOption('"%s"', $this->service->getDestination());
+        $cmd->exec();
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
-
-        return $p;
+        return $this->service;
     }
 }

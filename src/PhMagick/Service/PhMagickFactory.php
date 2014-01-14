@@ -1,6 +1,10 @@
 <?php
 
-namespace PhMagick;
+namespace PhMagick\Service;
+
+use PhMagick\PhMagick as PhMagickLibrary;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Image manipulation library.
@@ -25,7 +29,7 @@ namespace PhMagick;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package    PhMagick
+ * @package    PhMagick\Service
  * @author     Christoph, René Pardon <christoph@renepardon.de>
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
@@ -33,60 +37,19 @@ namespace PhMagick;
  * @link       https://github.com/renepardon/PhMagick
  * @since      2013-01-09
  */
-class Gravity
+class PhMagickFactory implements FactoryInterface
 {
     /**
-     * @var string
+     * Create and return PhMagick service instance.
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     * @return PhMagick
      */
-    const None = 'None';
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $config = $serviceLocator->get('Config');
+        $service = new PhMagick($config['phmagick']);
 
-    /**
-     * @var string
-     */
-    const Center = 'Center';
-
-    /**
-     * @var string
-     */
-    const East = 'East';
-
-    /**
-     * @var string
-     */
-    const Forget = 'Forget';
-
-    /**
-     * @var string
-     */
-    const NorthEast = 'NorthEast';
-
-    /**
-     * @var string
-     */
-    const North = 'North';
-
-    /**
-     * @var string
-     */
-    const NorthWest = 'NorthWest';
-
-    /**
-     * @var string
-     */
-    const SouthEast = 'SouthEast';
-
-    /**
-     * @var string
-     */
-    const South = 'South';
-
-    /**
-     * @var string
-     */
-    const SouthWest = 'SouthWest';
-
-    /**
-     * @var string
-     */
-    const West = 'West';
+        return $service;
+    }
 }

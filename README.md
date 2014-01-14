@@ -51,26 +51,27 @@ Add the following parts to your **composer.json** file...
         ),
     );
 
+Configuration
+-------------
+
+There is a configuration array placed within **module.config.php**. You can edit this configuration or place your own one into the Application's configuration folder.
+Modify the default values and switch between Graphicsmagick/Imagemagick.
+
 Usage
 -----
 
     <?php
-    use PhMagick/PhMagick;
+    // Retrieve service instance.
+    $service = $this->serviceManager->get('phmagick');
+    // Source is the image we want to modify and destination the name of new image.
+    $service->setSource('/tmp/testimage.jpg')
+            ->setDestination('/tmp/testimage_1_' . time() . '.jpg');
+    // The first call to resize will return an instance of Adapter and the second one call's the resize method.
+    $service->resize()->resize(150, 200, true);
 
-    // ...
-
-    $phmagick = new PhMagick('/tmp/image.jpg', '/tmp/newimage.jpg');
-    $phmagick->setAdapters(array('decorations', 'resize'));
-    $phmagick->resizeExactly(450, 200);
-    $phmagick->polaroid('test label goes here', 13);
-
-This usage is deprecated. The next solution will be implemented soon:
-
-    <?php
-    use PhMagick/PhMagick;
-
-    // ...
-
-    $phmagick = new PhMagick('/tmp/image.jpg', '/tmp/newimage.jpg');
-    $phmagick->resize->resizeExactly(450, 200);
-    $phmagick->decoration->polaroid('test label goes here', 13);
+    // Use the same service but set source again, so that we work on a new image.
+    $service->setSource('/tmp/testimage.jpg')
+            ->setDestination('/tmp/testimage_2_' . time() . '.jpg');
+    $watermarkImage = realpath(dirname(__FILE__) . '/_files/watermark.png');
+    // This places the watermark image on the top left without transparency.
+    $this->service->compose()->watermark($watermarkImage, Gravity::NorthWest, 100);

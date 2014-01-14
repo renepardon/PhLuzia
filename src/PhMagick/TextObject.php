@@ -30,7 +30,7 @@ namespace PhMagick;
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       http://www.francodacosta.com/phmagick
+ * @link       https://github.com/renepardon/PhMagick
  * @since      2013-01-09
  */
 class TextObject
@@ -53,7 +53,7 @@ class TextObject
     /**
      * @var string|bool
      */
-    protected $background = false;
+    protected $background = 'none';
 
     /**
      * @var string

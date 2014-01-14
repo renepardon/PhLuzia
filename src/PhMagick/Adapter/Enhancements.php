@@ -2,7 +2,8 @@
 
 namespace PhMagick\Adapter;
 
-use PhMagick\PhMagick;
+use PhMagick\Command;
+use PhMagick\Service\PhMagick;
 
 /**
  * Image manipulation library.
@@ -32,55 +33,28 @@ use PhMagick\PhMagick;
  * @copyright  2014 by Christoph, René Pardon
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt
  * @version    1.0
- * @link       http://www.francodacosta.com/phmagick
+ * @link       https://github.com/renepardon/PhMagick
  * @since      2013-01-09
  */
 class Enhancements extends AdapterAbstract
 {
-    use AdapterTrait;
-
-    /**
-     * @var string
-     */
-    const IDENTIFIER = 'PhMagick\Adapter\Enhancements';
-
-    /**
-     * Returns an array of names from methods the current adapter implements.
-     *
-     * @return mixed
-     */
-    public function getAvailableMethods()
-    {
-        return array(
-            'denoise',
-            'sharpen',
-            'smooth',
-            'saturate',
-            'contrast',
-            'edges',
-        );
-    }
-
     /**
      * Removes noise like Photoshop does.
      *
-     * @param PhMagick $p
      * @param int $amount
      *
      * @return PhMagick
      */
-    public function denoise(PhMagick $p, $amount = 1)
+    public function denoise($amount = 1)
     {
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' -noise ' . $amount;
-        $cmd .= ' -background "none" "' . $p->getSource() . '"';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('-noise %d', $amount)
+            ->addOption('-background "none" "%s"', $this->service->getSource())
+            ->addOption('"%s"', $this->service->getDestination());
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        $cmd->exec();
 
-        return $p;
+        return $this->service;
     }
 
     /**
@@ -89,44 +63,37 @@ class Enhancements extends AdapterAbstract
      * 'zoomed in' photo of a licence plate of a bank robbers car, or the face
      * of a man on a fuzzy shop camera video, and you see what I mean.
      *
-     * @param PhMagick $p
      * @param int $amount
      *
      * @return PhMagick
      */
-    public function sharpen(PhMagick $p, $amount = 10)
+    public function sharpen($amount = 10)
     {
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' -sharpen 2x' . $amount;
-        $cmd .= ' -background "none" "' . $p->getSource() . '"';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('-sharpen 2x%d', $amount)
+            ->addOption('-background "none" "%s"', $this->service->getSource())
+            ->addOption('"%s"', $this->service->getDestination());
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        $cmd->exec();
 
-        return $p;
+        return $this->service;
     }
 
     /**
      * Chip the edges within current image.
      *
-     * @param PhMagick $p
-     *
      * @return PhMagick
      */
-    public function smooth(PhMagick $p)
+    public function smooth()
     {
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' -despeckle -despeckle -despeckle ';
-        $cmd .= ' -background "none" "' . $p->getSource() . '"';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('-despeckle -despeckle -despeckle')
+            ->addOption('-background "none" "%s"', $this->service->getSource())
+            ->addOption('"%s"', $this->service->getDestination());
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        $cmd->exec();
 
-        return $p;
+        return $this->service;
     }
 
     /**
@@ -137,23 +104,20 @@ class Enhancements extends AdapterAbstract
      * mixes all three color channels equally, as defined by the HSL
      * colorspace, as such does not produce a true 'intensity' grayscale.
      *
-     * @param PhMagick $p
      * @param int $amount
      *
      * @return PhMagick
      */
-    public function saturate(PhMagick $p, $amount = 200)
+    public function saturate($amount = 200)
     {
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' -modulate 100,' . $amount;
-        $cmd .= ' -background "none" "' . $p->getSource() . '"';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('-modulate 100,%d', $amount)
+            ->addOption('-background "none" "%s"', $this->service->getSource())
+            ->addOption('"%s"', $this->service->getDestination());
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        $cmd->exec();
 
-        return $p;
+        return $this->service;
     }
 
     /**
@@ -166,45 +130,61 @@ class Enhancements extends AdapterAbstract
      * for the contrast function to center on (typically centered at '50%'),
      * and a contrast factor ('10' being very high, and '0.5' very low).
      *
-     * @param PhMagick $p
      * @param int $amount The contrast factor. ('10' being very high, and '0.5'
      *                    very low)
      *
      * @return PhMagick
      */
-    public function contrast(PhMagick $p, $amount = 10)
+    public function contrast($amount = 10)
     {
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' -sigmoidal-contrast ' . $amount . 'x50%';
-        $cmd .= ' -background "none" "' . $p->getSource() . '"';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('-sigmoidal-contrast %dx50%%', $amount)
+            ->addOption('-background "none" "%s"', $this->service->getSource())
+            ->addOption('"%s"', $this->service->getDestination());
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        $cmd->exec();
 
-        return $p;
+        return $this->service;
     }
 
     /**
      *
      *
-     * @param PhMagick $p
      * @param int $amount
      *
      * @return PhMagick
      */
-    public function edges(PhMagick $p, $amount = 10)
+    public function adaptiveSharpen($amount = 10)
     {
-        $cmd = $p->getBinary('convert');
-        $cmd .= ' -adaptive-sharpen 2x' . $amount;
-        $cmd .= ' -background "none" "' . $p->getSource() . '"';
-        $cmd .= ' "' . $p->getDestination() . '"';
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('-adaptive-sharpen 2x%d', $amount)
+            ->addOption('-background "none" "%s"', $this->service->getSource())
+            ->addOption('"%s"', $this->service->getDestination());
 
-        $p->execute($cmd);
-        $p->setSource($p->getDestination());
-        $p->setHistory($p->getDestination());
+        $cmd->exec();
 
-        return $p;
+        return $this->service;
+    }
+
+    /**
+     * Extract only the edges of image.
+     *
+     * @param int $edge
+     *
+     * @return PhMagick
+     */
+    public function edges($edge = 2)
+    {
+        $cmd = new Command('convert', $this->service);
+        $cmd->addOption('"%s"', $this->service->getSource());
+        $cmd->addOption('-colorspace gray')
+            ->addOption('-edge %d', $edge)
+            ->addOption('-background black')
+            ->addOption('-flatten')
+            ->addOption('"%s"', $this->service->getDestination());
+
+        $cmd->exec();
+
+        return $this->service;
     }
 }
