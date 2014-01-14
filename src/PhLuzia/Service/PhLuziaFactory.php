@@ -48,7 +48,7 @@ class PhLuziaFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $config = $serviceLocator->get('Config');
-        $service = new PhLuzia(new Config($config['phluzia']));
+        $service = new PhLuzia($config['phluzia']);
 
         return $service;
     }

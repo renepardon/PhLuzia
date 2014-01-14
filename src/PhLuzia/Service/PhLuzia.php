@@ -93,11 +93,11 @@ class PhLuzia
     /**
      * Initialize PhLuzia service with configuration options.
      *
-     * @param Config $options
+     * @param Config|array $options
      */
-    public function __construct(Config $options)
+    public function __construct($options)
     {
-        $this->options = $options;
+        $this->options = is_array($options) ? $options : $options->toArray();
     }
 
     /**
