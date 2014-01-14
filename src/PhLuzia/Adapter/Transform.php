@@ -52,7 +52,7 @@ class Transform extends AdapterAbstract
         $cmd->addOption('-background "transparent"')
             ->addOption('-rotate %d', $degrees)
             ->addOption('"%s"', $this->service->getSource())
-            ->addOption('"%s"', $this->service->getDestination());
+            ->addOption('"%s"', $this->service->getDestination(true));
 
         $cmd->exec();
 
@@ -109,7 +109,7 @@ class Transform extends AdapterAbstract
         $this->flipVertical();
 
         // Crop it to $size%
-        list($w, $h) = $this->service->getInfo($this->service->getDestination());
+        list($w, $h) = $this->service->getInfo($this->service->getDestination(true));
         $this->service->crop($w, $h * ($size / 100), 0, 0, Gravity::None);
 
         // Make a image fade to transparent.
@@ -117,13 +117,13 @@ class Transform extends AdapterAbstract
         $cmd->addOption('"%s"', $this->service->getSource())
             ->addOption(' ( -size %dx%d gradient: ) ', $w, ($h * ($size / 100)))
             ->addOption('+matte -compose copy_opacity -composite')
-            ->addOption('"%s"', $this->service->getDestination());
+            ->addOption('"%s"', $this->service->getDestination(true));
 
         $cmd->exec();
 
         // Apply desired transparency, by creating a transparent image and merge
         // the mirros image on to it with the desired transparency.
-        $file = dirname($this->service->getDestination()) . '/' . uniqid() . '.png';
+        $file = dirname($this->service->getDestination(true)) . '/' . uniqid() . '.png';
 
         $cmd = new Command('convert', $this->service);
         $cmd->addOption('-size %dx%d xc:none', $w, ($h * ($size / 100)))
@@ -133,9 +133,9 @@ class Transform extends AdapterAbstract
 
         $cmd = new Command('composite', $this->service);
         $cmd->addOption('-dissolve %d', $transparency)
-            ->addOption('"%s"', $this->service->getDestination())
+            ->addOption('"%s"', $this->service->getDestination(true))
             ->addOption($file)
-            ->addOption('"%s"', $this->service->getDestination());
+            ->addOption('"%s"', $this->service->getDestination(true));
 
         $cmd->exec();
 
@@ -144,9 +144,9 @@ class Transform extends AdapterAbstract
         // Append the source and the relfex.
         $cmd = new Command('convert', $this->service);
         $cmd->addOption('"%s"', $source)
-            ->addOption('"%s"', $this->service->getDestination())
+            ->addOption('"%s"', $this->service->getDestination(true))
             ->addOption('-append')
-            ->addOption('"%s"', $this->service->getDestination());
+            ->addOption('"%s"', $this->service->getDestination(true));
 
         $cmd->exec();
 

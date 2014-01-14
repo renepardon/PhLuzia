@@ -76,7 +76,7 @@ class Text extends AdapterAbstract
         }
 
         $cmd->addOption('label:"%s"', $text);
-        $cmd->addOption('"%s"', $this->service->getDestination());
+        $cmd->addOption('"%s"', $this->service->getDestination(true));
 
         $cmd->exec();
 

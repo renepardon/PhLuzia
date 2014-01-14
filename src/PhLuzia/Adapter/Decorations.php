@@ -59,7 +59,7 @@ class Decorations extends AdapterAbstract
             ->addOption('-compose Multiply -composite )')
             ->addOption('+matte')
             ->addOption('-compose CopyOpacity')
-            ->addOption('-composite "%s"', $this->service->getDestination());
+            ->addOption('-composite "%s"', $this->service->getDestination(true));
         $cmd->exec();
 
         return $this->service;
@@ -89,7 +89,7 @@ class Decorations extends AdapterAbstract
                 $color, $transparency, $offset, $offset
             )
             ->addOption('-background none -mosaic')
-            ->addOption('"%s"', $this->service->getDestination());
+            ->addOption('"%s"', $this->service->getDestination(true));
         $cmd->exec();
 
         return $this->service;
@@ -116,7 +116,7 @@ class Decorations extends AdapterAbstract
                 '( +clone  -background "%s"  -shadow %dx%d-%d+%d ) +swap -background none -layers merge +repage',
                 $color, $transparency, $offset, $cOffset, $cOffset
             )
-            ->addOption('"%s"', $this->service->getDestination());
+            ->addOption('"%s"', $this->service->getDestination(true));
         $cmd->exec();
 
         return $this->service;
@@ -142,7 +142,7 @@ class Decorations extends AdapterAbstract
                 '-bordercolor "%s"  -border 6 -bordercolor grey60 -border 1 -background  "none"   -rotate %d -background  black  ( +clone -shadow 60x4+4+4 ) +swap -background  "%s"   -flatten',
                 $borderColor, $rotate, $background
             )
-            ->addOption('"%s"', $this->service->getDestination());
+            ->addOption('"%s"', $this->service->getDestination(true));
 
         $cmd->exec();
 
@@ -203,8 +203,11 @@ class Decorations extends AdapterAbstract
             $cmd->addOption('-set caption "%s"', $format->getText());
         }
 
-        $cmd->addOption('-bordercolor "%s" -background "%s" -polaroid %d -background "%s" -flatten', $borderColor, $background, $rotation, $background)
-            ->addOption('"%s"', $this->service->getDestination());
+        $cmd->addOption(
+            '-bordercolor "%s" -background "%s" -polaroid %d -background "%s" -flatten',
+            $borderColor, $background, $rotation, $background
+        )
+            ->addOption('"%s"', $this->service->getDestination(true));
 
         $cmd->exec();
 

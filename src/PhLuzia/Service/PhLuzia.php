@@ -308,9 +308,13 @@ class PhLuzia
     /**
      * Gets destination path.
      *
+     * @param bool $needsPng This flag is used to trigger a warning if current
+     *                       operation needs PNG as destination format but
+     *                       another format is given.
+     *
      * @return string
      */
-    public function getDestination()
+    public function getDestination($needsPng = false)
     {
         if (($this->destination == '')) {
             $source = $this->getSource();
@@ -319,8 +323,17 @@ class PhLuzia
             $this->destination = sprintf("%s/%s.%s", dirname($source), md5(microtime()), $ext);
         }
 
-        // @todo add parameter (boolean) to check if the requested file operation
-        // needs a PNG and trigger a warning if so but another file type ($ext) gets returned.
+        if (true === $needsPng) {
+            $sourceParts = explode('.', $this->destination);
+            $ext = strtolower(end($sourceParts));
+
+            if ('png' != $ext) {
+                trigger_error(
+                    'File operation needs PNG format for target file.',
+                    E_USER_NOTICE
+                );
+            }
+        }
 
         return $this->destination;
     }

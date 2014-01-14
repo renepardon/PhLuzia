@@ -54,7 +54,7 @@ class Color extends AdapterAbstract
 
         $cmd = new Command('composite', $this->service);
 
-        if (PHLUZIA_LIBRARY_GRAPHICSMAGICK == $this->service->getOptions()['library']) {
+        if ($this->service->isLibrary(PHLUZIA_LIBRARY_GRAPHICSMAGICK)) {
             $cmd->addOption('-dissolve %d', $percent);
         } else {
             $cmd->addOption('-blend %d', $percent);
@@ -87,7 +87,7 @@ class Color extends AdapterAbstract
 
         $cmd = new Command('composite', $this->service);
 
-        if (PHLUZIA_LIBRARY_GRAPHICSMAGICK == $this->service->getOptions()['library']) {
+        if ($this->service->isLibrary(PHLUZIA_LIBRARY_GRAPHICSMAGICK)) {
             $cmd->addOption('-dissolve %d', $percent);
         } else {
             $cmd->addOption('-blend %d', $percent);
@@ -114,7 +114,7 @@ class Color extends AdapterAbstract
         $cmd = new Command('convert', $this->service);
         $cmd->addOption('-modulate 100,0');
 
-        if (PHLUZIA_LIBRARY_IMAGEMAGICK == $this->service->getOptions()['library']) {
+        if ($this->service->isLibrary(PHLUZIA_LIBRARY_IMAGEMAGICK)) {
             $cmd->addOption('-sigmoidal-contrast %dx50%%', $enhance);
         }
 
@@ -152,7 +152,7 @@ class Color extends AdapterAbstract
     {
         $cmd = new Command('convert', $this->service);
 
-        if (PHLUZIA_LIBRARY_GRAPHICSMAGICK == $this->service->getOptions()['library']) {
+        if ($this->service->isLibrary(PHLUZIA_LIBRARY_GRAPHICSMAGICK)) {
             // @todo Play with values to get real sepia!!!
             $cmd->addOption('-modulate 115,0,100')
                 ->addOption('-colorize 7,21,50')

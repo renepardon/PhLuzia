@@ -58,7 +58,7 @@ class Compose extends AdapterAbstract
             ->addOption('-gravity %s', $gravity)
             ->addOption($watermarkImage)
             ->addOption('"%s"', $this->service->getSource())
-            ->addOption('"%s"', $this->service->getDestination());
+            ->addOption('"%s"', $this->service->getDestination(true));
         $cmd->exec();
 
         return $this->service;
@@ -82,7 +82,7 @@ class Compose extends AdapterAbstract
 
         $cmd = new Command('montage', $this->service);
 
-        if (PHLUZIA_LIBRARY_GRAPHICSMAGICK == $this->service->getOptions()['library']) {
+        if ($this->service->isLibrary(PHLUZIA_LIBRARY_GRAPHICSMAGICK)) {
             // @todo Get working with Graphicsmagick
             $cmd->addOption('-tile %dx%d -geometry 0x0+0+0', $tileWidth, $tileHeight);
         } else {
