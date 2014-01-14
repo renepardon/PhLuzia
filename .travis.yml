@@ -13,7 +13,7 @@ matrix:
 
 before_script:
   - composer self-update
-  - composer update
+  - composer install
 
 script:
  - phpunit --coverage-text --configuration tests/phpunit.xml
