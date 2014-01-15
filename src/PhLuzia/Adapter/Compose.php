@@ -15,7 +15,7 @@ use PhLuzia\Service\PhLuzia;
  *
  * PHP version 5
  *
- * LICENSE: GPL-3.0
+ * LICENSE: LGPL-3.0
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ use PhLuzia\Service\PhLuzia;
  * @package    PhLuzia/Adapter
  * @author     Christoph, René Pardon <christoph@renepardon.de>
  * @copyright  2014 by Christoph, René Pardon
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt
+ * @license    http://www.gnu.org/licenses/lgpl-3.0.txt
  * @version    1.0
  * @link       https://github.com/renepardon/PhLuzia
  * @since      2013-01-09
@@ -83,7 +83,7 @@ class Compose extends AdapterAbstract
         $cmd = new Command('montage', $this->service);
 
         if ($this->service->isLibrary(PHLUZIA_LIBRARY_GRAPHICSMAGICK)) {
-            // @todo Get working with Graphicsmagick
+            // @todo Get working wphMagickith Graphicsmagick
             $cmd->addOption('-tile %dx%d -geometry 0x0+0+0', $tileWidth, $tileHeight);
         } else {
             $cmd->addOption('-geometry x+0+0 -tile %dx%d', $tileWidth, $tileHeight);

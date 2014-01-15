@@ -12,7 +12,7 @@ use PhLuzia\Service\PhLuzia as Service;
  *
  * PHP version 5
  *
- * LICENSE: GPL-3.0
+ * LICENSE: LGPL-3.0
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ use PhLuzia\Service\PhLuzia as Service;
  * @package    PhLuzia
  * @author     Christoph, René Pardon <christoph@renepardon.de>
  * @copyright  2014 by Christoph, René Pardon
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt
+ * @license    http://www.gnu.org/licenses/lgpl-3.0.txt
  * @version    1.0
  * @link       https://github.com/renepardon/PhLuzia
  * @since      2013-01-09
